@@ -30,7 +30,7 @@ In the cases where some special plugin or particular editor is needed the kata w
 If you're using a really sophisticated vim that has remapped keys, you can launch vim/nvim with `-u NONE` to return it to its stock settings:
 
 ```
-nvim -u NONE
+nvim -u NONE README.md
 ```
 
 # Markdown
@@ -54,3 +54,18 @@ You might want to practice some exercises multiple times which means doing the e
 You can use `u` to undo changes.
 
 Note that Tim Pope has a nice plugin vim repeat [here](https://github.com/tpope/vim-repeat) which (I think) also makes undo operations a little cleaner/faster. You don't need this for the exercises (regular undo is fine), but for some things it might make undo a bit more intuitive.
+
+# Keyboard Input Conventions
+
+The kata often specify keys to enter whilst using vim.
+
+Generally they will be in `monospace code format`.
+
+Usually the characters directly correspond to what you type, but there's some exceptions like:
+
+- `<enter>` - enter
+- `<escape>` - escape
+- `<c-...>` - control + some key
+- `<m-...>` - meta/alt/option + some key
+- `<leader>` - whatever your leader key is
+
