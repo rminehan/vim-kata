@@ -107,7 +107,7 @@ The power of vim!
 
 Some plugins introduce new text objects.
 
-Out of the gate those new operations/text objects will be usually able to interract with all the operations you already know. You can leverage your existing knowledge of operators with new text objects - vim is great.
+Out of the gate those text objects will be usually able to interract with all the operations you already know. You can leverage your existing knowledge of operators with new text objects - vim is great.
 
 Examples are:
 
@@ -115,7 +115,7 @@ Examples are:
 - `ia` - function argument
 - `il` - current line
 
-and of course Tim Pope's vim-surround plugin which is a bit hard to succinctly describe here.
+Likewise there are sometimes new operator added. The classic example is Tim Pope's vim-surround plugin (which is a bit hard to succinctly describe here).
 
 # Going further 
 
