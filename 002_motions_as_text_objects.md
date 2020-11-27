@@ -107,3 +107,12 @@ So even though vanilla text objects often have an extra `i` or `a` character, th
 and using motions will often an extra keypress anyway to move your cursor to the right location.
 
 (For line based operations, often there isn't a suitable existing text object and motions make more sense)
+
+# Terminology
+
+I've been using the terminology of "text objects" as the more general concept of a block of text,
+and motions as a type of movement which can be used to create a text object.
+
+Some vimmer's (and the vim docs) will use "motion" to mean what I refer to as a "text object".
+
+So I've gone rogue here. :rogue-pirate-rohan-parrot:

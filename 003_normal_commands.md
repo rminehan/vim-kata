@@ -1,4 +1,4 @@
-# Normal commands
+# The "normal" command
 
 The vim "command line" (triggered by typing `:`) has a very powerful command "normal".
 
