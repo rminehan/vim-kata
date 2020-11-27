@@ -69,3 +69,8 @@ Usually the characters directly correspond to what you type, but there's some ex
 - `<m-...>` - meta/alt/option + some key
 - `<leader>` - whatever your leader key is
 
+# Shoutout to "Practical Vim"
+
+"Practical Vim" by Drew Neil is a great book for learning vim. I've read through it in bits and pieces 2-3 times.
+
+A lot of the kata's, remarks and the general ordering of kata is heavily influenced by this book's approach.
