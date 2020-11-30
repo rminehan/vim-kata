@@ -25,13 +25,19 @@ There is a nice plugin `kana/vim-textobj-line` which adds the `il` (inside line)
 
 ## Exercise 1
 
-Remember this guy? It's a one line input so we can use `!!` here to prettify it.
+Remember these guys? They're one line inputs so we can use `!!` to execute them:
 
 - move your cursor to anywhere on the json line
 - do `!!jq .<enter>`
+- move your cursor to anywhere on the python print statement
+- do `!!python`
 
 ```json
 {"fire": ["joban", "joey-jo-jo-junior-shabadoo"], "dontFire": ["zij", "james", "jonathan"]}
+```
+
+```python
+print(42 * 60 - 23)
 ```
 
 ## Exercise 2

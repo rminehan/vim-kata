@@ -101,7 +101,25 @@ Use filtering and `jq` to prettify it into standard multi-line json.
 
 ```
 
-## Exercise 4 - figlet
+### Exercise 4 - computations
+
+We want to quickly work out what 42 * 60 - 23 is an put that into our code.
+
+We can use python (or any other interpreted language) to quickly do this.
+
+- put your cursor anywhere on the python code below
+- do `!ippython`
+    - ie. run it through the python interpreter
+
+```
+
+print(42 * 60 - 23)
+
+```
+
+NOTE: Later we will do this in an even faster way that doesn't require "print" and doesn't even require an external interpreter on your system.
+
+## Exercise 5 - figlet
 
 For those who wonder how Rohan generates:
 
