@@ -53,7 +53,7 @@ Fix this by copying the text His-Highness-the-Great from the first line and past
 
 - move your cursor to the first "H" in "His-Highness-the-Great
 - do `yW` (yank big word)
-- (this will copy "Highness-the-Great " - not the trailing space)
+- (this will copy "His-Highness-the-Great " - note the trailing space)
 - move your cursor to the leading "B" of "Boban" on the next line
 - do `P` to paste at that position (it's important to use upper case P here)
 - repeat moving the cursor and pasting for the other Bobans (note you can use `.` instead of `P` for subsequent pastes)
