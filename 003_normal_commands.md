@@ -33,7 +33,7 @@ Here it has no blank lines and each command is on a single line which makes it s
 
 - determine the start and end line numbers
 - (let's assume they're 41 and 43)
-- do `:41,43 normal A;<enter>`
+- do `:39,41 normal A;<enter>`
 
 ```java
 AbstractProxyBeanFactoryStrategyBuilder myAbstractProxyBeanFactoryStrategyBuilder = new ConcreteAbstractProxyBeanFactoryStrategyBuilder()
@@ -43,7 +43,7 @@ myAbstractProxyBeanFactoryStrategy.launchStrategy(myStrategyProxyDecisionProvide
 
 The command means:
 
-- for each line from 41 to 43,
+- for each line from 39 to 41,
 - start in normal mode on that line somewhere
 - then do `A;` (which moves the cursor to the end of the line, goes into insert mode, then writes a ";") 
 
@@ -62,28 +62,31 @@ a = 3
 b = 10
 c = 30
 def foo(d):
-return a + b * c - d
+  return a + b * c - d
 foo(None)
 ```
 
-Those weird vim incantation will look strange and confusing.
+That weird vim incantation will look strange and confusing.
 
 Let's break down the first one:
 
 - the `:` is just to enter command mode
 - the next part `.,.+5` is a range in the form of `start,finish`
-- the start is `.` which means "current line"
-- the end is `.+5` which means "current line + 5" (which is the line `foo(None)` is on)
+    - the start is `.` which means "current line"
+    - the end is `.+5` which means "current line + 5" (which is the line `foo(None)` is on)
 - then there's `normal` as usual
-- `I` means move the cursor to the start of the line and go into insert mode
-- `#` will cause a "#" to be entered (which is how you comment out python code) 
-- `<enter>` is just to submit the command
+- `I#<enter>` is the normal command
+    - `I` means move the cursor to the start of the line and go into insert mode
+    - `#` will cause a "#" to be entered (which is how you comment out python code) 
+    - `<enter>` is just to submit the command
 
 The second one is the same except the normal command is `^x`:
 
 - `^` means move the cursor to the start of the line
 - `x` means delete the character the cursor is on
 - the effect of this is to remove the "#" we previously inserted 
+
+(Note that vim has more sophisticated ways to comment code - there is a plugin which adds a comment operator `gc`)
 
 ## Exercise 3
 
@@ -99,4 +102,11 @@ Breaking this down:
 - then there's `normal` as usual
 - `^` means move to the front of the line (technically the first non-whitespace character - see also `0`)
 - `gUiw` is `gU (uppercase) + iw (in little word)`, ie. upper case the little word the cursor is on
-- `<enter>` is submits the command
+- `<enter>` submits the command
+
+# Summary and Comparison with '.'
+
+Use the normal command when you want to apply the same change to a contiguous block of lines.
+
+The dot operator overlaps with the normal command in that you specify the command once and then can reapply it by moving your cursor and pressing dot.
+It works better when you need to reapply your changes in a more ad-hoc way (e.g. multiple times in a line, or on disconnected lines).
