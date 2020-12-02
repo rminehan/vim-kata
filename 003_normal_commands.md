@@ -32,7 +32,7 @@ Remember the Java code from [kata 1](./001_dot_operator.md) that was missing sem
 Here it has no blank lines and each command is on a single line which makes it suitable for a normal command.
 
 - determine the start and end line numbers
-- (let's assume they're 41 and 43)
+- (let's assume they're 39 and 41)
 - do `:39,41 normal A;<enter>`
 
 ```java
