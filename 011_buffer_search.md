@@ -119,10 +119,11 @@ If we were searching code and boban was a variable name then "boban.com" would b
 
 # Summary
 
-We're just scratching the surface of buffer searching - there's more to come:
+If you're using vim without any plugins then buffer search will be pretty essential,
+but once you've got some common search plugins installed, the reality is that you won't need it as much
+and you're probably not going to need its more obscure features.
 
-- regexes
-- vim's special extended regex tricks (we saw some today)
-- tricks to make building searches faster
+Hence we're not going to go too deep with buffer search.
 
-It's a big topic!
+Useful plugins for search are fzf.vim and sneak.
+Vim also has some useful linewise motions we'll cover in [lesson 15](015_linewise_jumps.md).
