@@ -131,6 +131,21 @@ Sneak shares the advantages of `t` and `f`, e.g.
 
 Sneak replaces a lot of quick searches you'd usually do with buffer search.
 
+# Strategic jumping and quick scope
+
+If you use `f` and `t` enough, you'll develop a nack for looking at the area you want to jump to and calculating which
+character in that area is the most unusual (and hence most likely to get you there in one jump).
+
+For example characters like `q` and `z` are less common in common (unless you're using ZIO) so if you see a `q` in the word
+you want to jump to, then `fq` will probably get you there pretty quickly.
+
+There is in fact a plugin `unblevable/quick-scope` designed to assist with this kind of thinking.
+
+When you press `f` or `t`, it colors the letters in words that will get you to that word in one or two jumps.
+
+This is a nice plugin because it doesn't actually modify the way vim shortcuts work,
+it just assists you in using them in a more efficient way.
+
 # Summary
 
 `f` and `t` are very useful for doing quick jumps on the current line.
