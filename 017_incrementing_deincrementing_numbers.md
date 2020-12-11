@@ -103,3 +103,9 @@ This means incrementing it would change it to "10" :upside-down-face:
 See the `nrformats` option.
 
 More info [here](https://vim.fandom.com/wiki/Increasing_or_decreasing_numbers).
+
+Overall vim's support for octal probably comes back to it being used predominantly by C programmers early on,
+who would work with octal literals in code.
+
+The other usecase for octal support is that Enxhell can print his age in octal on his ID so that he can sneak into bars and clubs
+(16 in decimal becomes 20 in octal).
