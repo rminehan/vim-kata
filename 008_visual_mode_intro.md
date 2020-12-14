@@ -73,6 +73,7 @@ Upper case all the sql keywords in the query below: (that is everything except "
 - press `ee` to extend the selection across "order by"
 - do `gU` to uppercase the selection
 - move your cursor to the 'd' in "desc"
+- do `v` to enter visual mode
 - press `j` to extend the selection down a line (it should encompass the whole last line)
 - do `gU` to uppercase the selection
 
