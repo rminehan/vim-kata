@@ -1,6 +1,6 @@
 # Visual mode modes
 
-Last kata we introduced visual mode which we initiate by pressing `v`.
+Last kata we introduced visual mode which we initiated by pressing `v`.
 
 Turns out this is "character" visual mode.
 
@@ -44,7 +44,7 @@ Move all the zero lines to below the one lines:
 (Note this is just to demonstrate using visual line mode - a much better way to cut the 3 lines of zeroes
 would have been do put your cursor on the first line of zeroes and do `d2j`, ie. "delete down 2 lines".
 
-Resist the urge to rely on visual line mode when there are faster, more vimmy ways to do things)
+Resist the urge to rely on visual line mode when there are faster, more vimmy ways to do things.
 
 ## Exercise 2 - switching modes
 
