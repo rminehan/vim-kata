@@ -79,7 +79,7 @@ scala is 10 x better than python - $30
 
 This will run `10<c-a>` on every line with the cursor at the start of each line (I'm pretty sure).
 
-This worked for all our books except the last. Here the price stayed the same and the title changed...
+This worked for all our books except the last. Here the price stayed the same and the title changed to the one for my next book...
 
 # Speed dating Tim Pope (every vimmer's dream)
 
