@@ -38,7 +38,7 @@ It's Enxhell's birthday - change his age in the sentence below:
 - do `<c-a>`
 
 ```
-Happy 16th birthday Enxhell!
+Happy 15th birthday Enxhell!
 ```
 
 ## Exercise 2
