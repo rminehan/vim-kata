@@ -4,11 +4,16 @@ Previously we looked at buffer search and how the search term is a regex.
 
 Most programming languages languages make heavy use of operators like `+.[]*<>` as part of their syntax.
 
-However these characters also have special meaning in regexes, e.g. `+` means "one or more" and `.` means "any character".
+However these characters also have special meaning in regexes, e.g.
 
-It gets more confusing when you have a search that requires a special character in both it's literal form as well as its regex form,
-e.g. "one of more `+`'s".
-You will need to escape one of the plus's and not escape the other. Which way around the escaping happens depends on your search mode.
+- `*` means "zero of more"
+- `+` means "one or more"
+- `.` means "any character"
+
+It gets more confusing when you have a search that requires a special character
+in both it's literal form as well as its regex form, e.g. "one of more `+`'s".
+You will need to escape one of the plus's and not escape the other.
+Which way around the escaping happens depends on your search mode.
 
 Vim has 4 search modes:
 
@@ -17,25 +22,31 @@ Vim has 4 search modes:
 - `\M` no magic
 - `\V` very no magic
 
-So they are ordered from most to least magic-ness.
+Above they are ordered from most to least magic-ness.
 
 "Magic-ness" translates to characters having their regex meaning by default,
 and escaping is required to give them their literal meaning.
 
-In very magic mode, `a+` means "one of more a's" and `a\+` means "a followed by plus".
+e.g. in "very magic" mode, `a+` means "one of more a's" and `a\+` means "a followed by plus".
 
-In very no magic mode it switches, ie. `a+` means "a followed by plus" and `a\+` means "one or more a's".
+In "very no magic" mode it switches, ie. `a+` means "a followed by plus" and `a\+` means "one or more a's".
 
-Very magic mode is close to perl's "extended" regex syntax which people usually treat as "standard" regex.
-Magic is closer to standard old school regex (e.g. grep).
+Very magic mode is close to perl's "extended" regex syntax which most people now think of as "standard" regex (e.g. egrep).
+Magic is closer to what old schoolers used to consider "standard" regex (e.g. grep).
 
 # 4 modes?
 
-The reality is that it's too hard to remember the nuances of the two middle modes. Some things are special and some aren't.
+In "magic" and "no magic" mode some characters are magic and some aren't, e.g.
 
-It's much easier to use either very magic mode where everything has special meaning, or very no magic where nothing does.
+- `+` is literal
+- `.` is magic
 
-So I wouldn't recommend spending time trying to memorize the two middle modes.
+The reality is that it's too hard to remember the nuances of the two middle modes.
+
+It's much easier to just use either:
+
+- "very magic mode" where all those operators are magic
+- "very no magic" where all those operators are literal
 
 # Using a mode
 
@@ -72,14 +83,30 @@ E.F
 ekf
 ```
 
+You might find it easier to split your window with `:split` so that the text above is always visible in one split
+and the instructions are visible in the other.
+
+In the last kata we set some search related flags.
+
+Likewise for this one have case insensitivity and smart case set.
+
+If you want to see your matches interactively have `incsearch` set.
+It can be a little confusing though when it makes your cursor jump around whilst you type your search.
+
+Having `hlsearch` enabled will be useful to see what matches your search.
+
+The above paragraphs are summed up by a command like:
+
+```
+:set ignorecase smartcase incsearch hlsearch
+```
+
 ## Exercise 1
 
 Search for the literal text "a+b".
 
-The default search mode is "magic" where `+` and `.` are literal.
-
-(I think) part of the reason for making this the default is because vim was originally written with C coding in mind and this makes
-it easy to search for expressions like "a+b".
+The default search mode is "magic" where `+` is literal and `.` is magic
+(there's some discussion at the bottom about why this might be the default)
 
 So we just do `/a+b`. This should match "a+b" but not "ab".
 
@@ -118,10 +145,38 @@ Breaking that down:
 - `\+` literal plus
 - `+` one of more (applied to a plus)
 
-# Setting very magic to be the default
+# Vim's seemingly odd default mode
 
-Some people want buffer search to default to very magic, so they remap `/` to `/\v` meaning that
-when they type `/` from normal mode, it automatically inserts a `\v` at the start of their pattern.
+As mentioned in exercise 1, the default mode is "magic" rather than "very magic" which is what you might expect.
+
+My guesses at how this came about:
+
+- when vi/vim was created, extended regex didn't exist yet or wasn't widely used/accepted.
+  So at the time "magic" was made the default (and very magic might not have even existed).
+  When extended regex did become popular, changing the default behavior in vim would have broken scripts
+  and annoyed older curmudgeon-y vim users who are used to magic mode and like things the way they are.
+  So new modes "very magic" and "very no magic" were added as a way to "opt out" but "magic" remained the default.
+
+- early on a lot of vim users were C programmers and magic might make sense there for fast searching.
+  For example `+` would occur a lot as a literal character in C, but `.` wouldn't.
+
+## Setting very magic to be the default
+
+Some people want buffer search to default to very magic.
+
+Vim doesn't have a nice built in way to do this, but as a hack you can remap `/` to `/\v` so that everytime
+you hit `/` from normal mode it's as if you typed `/\v` which populates your search with a `\v`.
+
+Add this line to your vim config to get that change:
+
+```
+nnoremap / /\v
+```
+
+You can try this out in your vim session without making it permanent -
+just run it as an ex command: `:nnoremap / /\v` then try a search!
+
+You might also want to add an analogous mapping for `?` (backwards search) too!
 
 # Summary
 
