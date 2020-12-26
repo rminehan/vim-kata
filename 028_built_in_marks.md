@@ -63,7 +63,7 @@ When are `.` and `^` different?
 When your last change was not an insert, e.g. a paste, delete etc...
 Or if your last insert didn't add any text, e.g. doing `i<escape>`.
 
-Note also `gi` would have been even better here - we'll cover it in a later kata.
+Note also `gi` would have been even better here - we'll cover it in [kata 33](033_insert_tricks.md).
 
 ## Exercise 2
 
