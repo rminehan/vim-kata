@@ -96,6 +96,9 @@ There is also `%V` (`:help /\%V`) which limits the match to the most recent visu
 (probably using marks `'<` and `'>` under the hood).
 Note the `%` - don't confuse this with `\V` for very-no-magic.
 
+Overall think of `%` as meaning "context", as the operators that follow it tend to be related
+to the buffer being searched (e.g. line numbers, columns, last visual selection, cursor position).
+
 The block below has column markers for digits and tens (note that columns start at 1 in vim).
 
 For this exercise, we'll find all the "bobans" contained entirely in columns 20-29.
@@ -106,7 +109,7 @@ For this exercise, we'll find all the "bobans" contained entirely in columns 20-
 - add `%V`
     - what is _supposed_ to happen is that all boban's in the block highlight
     - but depending on your vim, only the lowercase one may highlight
-    - this might be a potential bug where `set ignorecase` gets ignored due to `%V` (I can't find anything in the docs)
+    - potentially the capital "V" is causing `smartcase` to disable case insensitivity (even though it's not a literal bug)
 - do `\c` to explicitly turn on case-insensitivity (now all the boban's should match)
 - add `%<31c` (now only the boban's that _end_ before column 31 should highlight)
 - move your cursor back to just after the `\v` and add `%>19c`
