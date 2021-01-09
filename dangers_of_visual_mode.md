@@ -1025,6 +1025,66 @@ That means the other newlines can't get matched.
 It's a very cunning prison break that allows just one extra newline to sneak through.
 Most wardens wouldn't be able to spot that loophole!
 
+### What about linewise visual mode?
+
+The analysis above was for the jagged character visual mode.
+
+It relied on issues with the jagged start and end sections of visual selections.
+
+Linewise visual selections shouldn't suffer from that though right?
+
+- put your cursor somewhere on "000"
+- do `Vj<escape>` to select two lines
+- do `k` to go up to the "000" line
+- do `dd` to kill it
+- do `gv` - what do you see? (should just be "111" selected)
+
+```
+000
+111
+222
+```
+
+Let's try a variation where we delete the bottom line:
+
+- put your cursor somewhere on "000"
+- do `Vj<escape>` to select two lines
+- do `dd` to kill the "111" line
+- do `gv` - what do you see? (should now be _two_ rows)
+
+```
+000
+111
+222
+```
+
+:not-very-consistent-parrot:
+
+In particular notice that when the _bottom_ line gets deleted, the visual selection doesn't shrink.
+That's applicable to our bug.
+
+Eventually the visual selection will shrink to the point where the final expected flattening step will be performed.
+Will the visual selection shrink? We can emulate something similar by looking at our example near the last step:
+
+- put your cursor on the first line
+- do `Vjj`
+- do `:s/\v%V\s*$\_s*%V\_s/ /`
+- do `gv`
+
+```
+
+  Join me with the the lines below
+
+ and this one
+
+
+```
+
+Again you can see it killed too many newlines _and_ the visual selection is the current and next line.
+
+My theory is that when the bottom line gets removed, the visual selection doesn't shrink as expected,
+catching that extra newline.
+
 ## Other bugs?
 
 The interleaving approach of `substitute` would create potential for other bugs.

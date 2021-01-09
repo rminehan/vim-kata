@@ -75,6 +75,9 @@ Then we get the usual benefits of operator + text object:
 - it's portable across buffers
 - it's more extensible as we can use it with new operators
 
+A minor point in favor of `gn` is that it works better with multiline searches.
+See exercise 3 of [kata 49](049_advanced_regex_7_multiline.md).
+
 Finally another little pro for `gn` vs using `n` is that it removes the ambiguity related to search direction.
 When you hit `n`, it follows the search direction of your last search (forwards for `/` and backwards for `?`).
 Chances are you won't be able to remember which direction you used.
