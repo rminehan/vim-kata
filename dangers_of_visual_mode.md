@@ -274,6 +274,81 @@ Sometimes you don't want this range as you just _happened_ to be in visual mode 
 
 You can use `<c-u>` (covered in [kata 33](033_insert_tricks.md)) to delete to the front of the ex command.
 
+## Auto-populating from visual character mode
+
+Notice that when vim populates the range for you, it does this by using the line number of the start
+and end anchors for your most recent selection.
+
+```
+'<,'>
+```
+
+It doesn't actually matter whether you were in character, line or block mode.
+All that matters is the lines for the anchors.
+
+So the ex command you run doesn't really care about what you have selected,
+it cares about the line range from what you have selected. To make this point:
+
+- put your cursor on the third 'a'
+- do `v`
+- press `jjj` to extend it downwards
+- do `:normal gU$<enter>` (to upper case from the cursor to the end of the line)
+
+```
+aaaaaa
+bbbbbb
+cccccc
+dddddd
+```
+
+Notice how the entirety of each line got uppercased (even the first and last).
+This is because `'<` and `'>` got converted to line numbers,
+then that range of lines had `normal gU$` applied to them.
+
+To hammer it home, you can repeat the above with visual block mode (`<c-v>`).
+
+## Prison breaks
+
+_Another_ confusing aspect of this is that the substitute range defines the allowed _starting_
+positions for matches, but there's nothing that stops a match "breaking out".
+
+For example:
+
+- put your cursor somewhere on the first line
+- do `V:` start an ex command on that line
+- do `s/\v\_w+/X/<enter>`  (here `\_w` means "wordy or newline")
+
+```
+aaaaaaa
+aaaaaaa
+#
+```
+
+Only the first line of 'a's was in the range defined by `'<,'>`.
+
+The very first 'a' on that lines started a match.
+The `\w+` then ran to the last 'a' on that line, then over the newline,
+then onwards onto the next line at which points it's done its "prison break".
+
+It consumed all the 'a' on the next line and the newline after.
+It's finally halted by the '#'.
+
+So the final text should be:
+
+```
+X#
+```
+
+Most of the time you don't need to worry about this because you're _not_ using atoms that match newlines.
+That means all matches must end on the same line they started on.
+Hence if a match starts within the line range, it must end in the line range.
+
+Once you introduce atoms like `\_*` that match newlines, things get more confusing.
+Patterns can prison break out of the substitution range, and if you want to limit them you need
+to use `%` based matches, in particular `%V` which the next section discusses in detail.
+
+See also [this related article](why_avoid_newline.md) for info about matching newlines.
+
 # Limiting regex searches
 
 [Kata 43](043_advanced_regex_1_restricting_search_space.md) introduces many mechanisms to restrict matches
@@ -282,14 +357,127 @@ in a search based on context within a buffer.
 One such mechanism is `%V` (or `\%V` in magic mode) which only matches if the engine is inside the most
 recently selected visual block (see `:help /\%V`).
 
-It turns out there's some bugs using this with the `substitute` command.
+It turns out there's some "bugs" or (at least unexpected behaviors) using this with the `substitute` command.
 
-## Kata 49 - exercises 1 and 2 - prison break
+First though we need to clarify how `%V` works with visually selected lines.
+
+## Substituting and %V
+
+As explained above, when you visually select something and hit `:`, vim populates the ex command with a line range,
+based on the positions of the start and end anchors.
+It doesn't matter what kind of visual selection it was, only the anchor positions affect those line numbers.
+
+For the `substitute` command, that range defines which characters to consider as starting points when
+searching for matches to replace.
+The range is line based, meaning that `substitute` is always scanning on _blocks of lines_.
+
+The line range isn't affected by the kind of visual selection you had, but `%V` definitely _is_ affected.
+
+For example:
+
+- put your cursor on the third 'a' on line 2
+- do `v`
+- do `j`
+- do `:s/\v%Va/X/g`
+
+```
+aaaaaa
+aaaaaa
+aaaaaa
+aaaaaa
+```
+
+You should get:
+
+```
+aaaaaa
+aaXXXX
+XXXaaa
+aaaaaa
+```
+
+The range specified for the engine to consider overall was the two middle lines
+and `%V` limited those characters to the ones that were selected.
+
+```
+aaaaaa\naaaaaa\naaaaaa\naaaaaa\n
+        ----------------            Range defined by '<,'>
+          ---------                 Visual selection
+```
+
+Repeat the same steps on this block but use `V` or `<c-v>` instead of `v`.
+You'll see it makes a difference to what got replaced.
+
+```
+aaaaaa
+aaaaaa
+aaaaaa
+aaaaaa
+```
+
+For another more interesting example:
+
+- create the same character visual selection as before
+- press escape
+- put your cursor on the the top line of a's
+- do `:.,+1 s/\v%Va/X/g<enter>`
+
+```
+aaaaaa
+aaaaaa
+aaaaaa
+aaaaaa
+```
+
+You should get:
+
+```
+aaaaaa
+aaXXXX
+aaaaaa
+aaaaaa
+```
+
+The difference here was that we didn't let the visual selection drive the line range for the substitute command.
+We did `.,+1` which means "this line and the one below".
+We did it in a way that didn't override the previous visual selection.
+`gv` should still show that same jagged selection you originally made.
+
+```
+aaaaaa\naaaaaa\naaaaaa\naaaaaa\n
+----------------                    Range defined by .,+1
+          ---------                 Visual selection
+          ------                    Overlap - any a's in here become X's
+```
+
+When we look at a confusing bugs later, this distinction between the line range and the visually selected area
+will become relevant.
+
+# Deep dive - hunting a most peculiar bug
+
+## Pre-amble
+
+This section is a deep dive into a fairly peculiar bug related to vim's regex and visual mode.
+
+It's unlikely this bug will ever effect you as:
+
+- it requires a fairly artificial setup
+- the consequences of it aren't particularly bad and often you wouldn't even realize it happened
+- it will probably get fixed eventually get fixed
+
+So the point of reading this section is not to make you aware of the bug,
+it's to deepen your knowledge and make you more aware of the kinds of edge cases you'd hit
+when you do complex things with visual mode.
+
+If you don't want to do the deep dive then you're finished with this article -  just jump to the final conclusion!
+
+## Kata 49 - exercises 1 and 2
 
 [Kata 49](049_advanced_regex_7_multiline.md) exercises 1 and 2 show the effect of including or not including
 `%V` at the back of a pattern used in a substitute.
+Without it, we get a prison break situation.
 
-The aim of the exercise is to cleanup trailing whitespace and blank lines within a visually selected block.
+The original aim of exercise 1 was to cleanup trailing whitespace and blank lines within a visually selected block.
 
 ```
 # With %V
@@ -330,19 +518,19 @@ Notice how the original text had 2 blank lines after it, but the output one had 
 
 This actually doesn't make sense based on our current understanding.
 You might be thinking that the newline after "one" is being matched and replaced by space.
-That's not the case though.
+That's shouldn't be the case though.
 
 Let's track what the engine should do based on our understanding:
 
 ```
-\n  Join me		\n    with the  	\n  the lines\nbelow\n\n and this one\n\n\n```
+\n  Join me\n    with the  \n  the lines\nbelow\n\n and this one\n\n\n```
     -----------------------------------------------------------------------
-    ^             Visually selected                                      $ matches
-    ^                                                                    -->--> \_s*
-    ^                                                                    --<--< backtrack for %V
-    ^                                                                    %V matches the \n but doesn't consume it
-    ^                                                                   ^
-    --------------------------------------------------------------------- ends on 'e'
+    ^             Visually selected                             $ matches
+    ^                                                           -->--> \_s*
+    ^                                                           --<--< backtrack for %V
+    ^                                                           %V matches the \n but doesn't consume it
+    ^                                                          ^
+    ------------------------------------------------------------ consumes up to 'e'
                           Expected final match
 ```
 
@@ -350,16 +538,21 @@ Let's track what the engine should do based on our understanding:
 - `$` will match before the newline (zero width)
 - `\_s*` will match the newline and run all the way to the 3 backticks
 - the `%V` won't match at the first backtick as it's not in the original visual selection
-- the engine will backtrack until the _following_ character is in the visual selection
-    - that is _before_ the newline after "one"
-- the last character consumed was 'e'
+- the engine will backtrack until the character _following_ its position is in the visual selection
+- it stops _on_ the newline after "one" and the `%V` has a zero width match there (not consuming the newline)
 
 The engine should finish just before the newline after "one" and _should not have_ replaced it.
-There _should_ be 3 newlines meaning two blank lines.
+The last character consumed should be the 'e' from "one".
+
+So the newline after "one" shouldn't have gotten matched.
+That means there _should_ still be 3 newlines which translates visually to two blank lines.
+
+It turns out the newline does get matched but for a different reason,
+but before getting to that, we should fix the subtle issue with how we're using `%V`.
 
 ## The character _before_ the end
 
-This comes back to a subtle aspect of `\%V`. From the help:
+If you do `:help /\%V` it says;
 
 ```
 \%V     Match inside the Visual area.
@@ -369,30 +562,38 @@ This comes back to a subtle aspect of `\%V`. From the help:
         the pattern
 ```
 
-Note the part about _before the end of the pattern_.
+Note the part about _just before the end of the pattern_.
 
-In our pattern, the `%V` is after the end of the pattern in the sense that it's testing if the next element
-after what's been consumed so far is in the visual selection.
+What it means is that `%V` shouldn't be right at the end of your pattern,
+but it should be matching the last character consumed in your pattern.
 
-For example if you selected the below as usual, then searched: `/\vabc%V` it will be checking if the 'd' was
-visually selected, not 'c'. This is because the engine has already consumed 'c' using `c` and its position is
-now at 'd' when it processes `%V`.
+It's easier to see this subtle distinction with an example.
+Below we want to replace "abc" with "ABC" when it's completely visually selected:
+
+- put your cursor on the first 'a'
+- do `vjll` to extend the selection across both "abc"s
+- do `:s/\v%Vabc%V/ABC/g<enter>`
 
 ```
 abcde
+abcde
 ```
 
-The 'd' would be checked aginst `%V` but it's a zero width match, so the 'd' wouldn't be consumed.
+Note how it replaced the top one but not the bottom.
 
-If you were doing a substitution, the 'd' wouldn't be touched.
-Try it by visually selecting the line and doing: `:s/\vabc%V/x<enter>`
+The reason is because the second `%V` in the pattern is checking the character _after_ 'c'.
 
-If you wanted to make sure that only "abc" needs to be visually selected, you'd use `ab%Vc`,
-ie. put `%V` before the end of the pattern.
+On the second line, `%Vabc` consumed "abc" and now the engine is on 'd'.
+It runs `%V` and _doesn't_ get a match because 'd' wasn't visually selected.
+
+The bug is that we didn't put `%V` "just before the end of the pattern" to use the language of the help page.
+
+This looks weird but it makes sense. After all to make sure the 'a' is in the visual selection, we put `%V` _before it_.
+It wouldn't make sense for that `%V` to look forward, but the one for 'c' to look backward.
 
 ## Fixing the pattern
 
-The below fix shows the correct use of `%V`.
+Applying this to our example, the below fix shows the correct use of `%V`.
 We've put a single `\_s` after it which represents the last character matched.
 
 Because `%V` comes _before_ the `\_s`, it will enforce it's in the visual range.
@@ -432,13 +633,26 @@ and you'll see now there's _no_ trailing blank lines:
   Join me with the the lines below and this one
 ```
 
-The difference between this and the previous was that we're now matching the newline after "one".
+Previously it was:
 
-That newline gets converted to a space which causes the blank line following it to get joined into it.
+```
 
-So then we'd be expecting one blank line to remain, but there's zero.
+  Join me with the the lines below and this one
 
-In this and the previous example, there is some other gremlin causing an extra newline to get matched.
+```
+
+So the change has caused an extra newline to get matched.
+
+```
+  Join me\n    with the\n  the lines\nbelow\n\n and this one\n\n\n
+                                                            --        matched before we added \_s
+                                                            ----      matched once we added \_s
+
+```
+
+In both cases it's wrong and should be matching one less newline.
+
+There is some other gremlin causing an extra newline to get matched...
 
 ## A simpler gremlin example
 
@@ -517,6 +731,8 @@ Oh dear! You probably got:
 aabb[BACKTICK][BACKTICK][BACKTICK]
 ```
 
+## What's going on?
+
 Two weird things here:
 
 - there's _two_ b's
@@ -528,8 +744,7 @@ Because the newline was replaced, that caused the backticks to be joined onto th
 The issue here is that the searching and replacing seem to be interleaved
 (I'm fairly confident of this but haven't found any official verification).
 
-The first replacement reduces the text block significantly, and those trailing a's move into the visual selection.
-The regex engine continues processing the remaining a's and matches all the way to the newline at the end of that line.
+It finds a match, replaces it, finds another match, replaces it, etc...
 
 ```
 aaaaaaaaaa   aaXXXXXXXX   aabaaaaaaaa  aabXXXXXX...
@@ -538,10 +753,14 @@ aaaaaaaaaa   XXaaaaaaaa
 
              The a's where             The visual selection
              X's are get               still spans two lines
-                                       (represented by X's here)
+              matched                 (represented by X's here)
 ```
 
-To understand what happened to the visual selection, go back to this example from earlier:
+The first replacement reduces the text block significantly, and those trailing a's slide up into the visual selection
+(even though they originally _weren't_ in the selection).
+The regex engine continues processing the remaining a's and matches all the way to the newline at the end of that line.
+
+To understand what happened to the visual selection, have another read through the example from earlier that used:
 
 ```
 A0123456
@@ -551,12 +770,10 @@ D0123456
 E0123456
 ```
 
-Our substitution does reduce the visual selection, but not enough. It still ends up spanning 2 lines
-which means that the trailing a's and their newline get included in the visual selection.
+It should show you that our substitution does reduce the visual selection, but not enough.
+It still ends up spanning 2 lines which means that the trailing a's and their newline get included in the visual selection.
 
 ## Back to our example
-
-For this example, I don't have a 100% certain explanation for the bug, but I'm fairly confident it's related to this bug.
 
 Recall the issue was that:
 
@@ -579,18 +796,24 @@ substitutes to:
   Join me with the the lines below and this one 
 ```
 
+### False theory
+
 You might be thinking that the blank line between "below" and "and this one" is getting deleted
-which causes the text below to slide up, causing an extra newline to get matched and replaced.
+which causes the text below it to slide up, causing an extra newline to get matched and replaced.
 
 This isn't the case though. Deleting entire lines usually also updates the visual selection too.
 
 You can test it by deleting the blank line, running the replace and seeing the bug is still there.
 
-If this was the bug you'd expect that adding an equal amount of blank lines above and below "and this one"
+Likewise if this was the bug you'd expect that adding an equal amount of blank lines above and below "and this one"
 would give us the same final result as they cancel out.
-But this isn't the case either, we end up with more blank lines below.
+But this isn't the case either, we end up with more blank lines below - adding more above doesn't seem to amplify
+the bug to consume more space below.
 
-What's interesting is that the bug also happens from character visual mode:
+### Character visual mode
+
+What's interesting is that the bug also happens from character visual mode when we explicitly exclude the newline
+after "one":
 
 - put your cursor on 'J'
 - do `v`
@@ -620,54 +843,289 @@ You should get the same thing:
 There's no trailing blank lines meaning that 2 of the 3 trailing newline characters got replaced.
 The first replace shouldn't have matched any of those trailing newlines because the visual selection
 ended on the 'n' of "and".
+
 So it seems very much like it has something to do with `%V` and sliding text.
 
-My theory is that after the first replacement, the visual selection still spans 2 lines,
-from the 'J' of "Join" up to 3 characters on the next line as represented by the 'X' in the diagram.
+### Remaining jagged lines
+
+What we observed in the early example:
+
+```
+A0123456
+B0123456
+C0123456
+D0123456
+E0123456
+```
+
+was that the jagged start and end chunks of visual selections don't seem to get modified as text is removed.
+Only complete lines seem to be removed.
+
+Let's reduce our example to just the first couple of lines:
+
+- put your cursor on 'J'
+- do `vj`
+- do `:s/\v%V\s*$\_s*%V\_s/ /<enter>`
+- do `gv`
+
+```
+  Join me
+    with the
+
+
+```
+
+you should get:
+
+```
+  Join me  with the 
+```
+
+and `gv` should be a jagged selection starting at 'J' and ending on the last tilda.
+
+Repeat it on this block but pressing `j` twice when extending the selection:
+
+```
+  Join me
+    with the
+  the lines
+
+
+```
+
+Again you should get two jagged lines in the selection.
+In this case, the internal line was deleted out of the visual selection.
+
+The point of this is to make you see that as the lines get gradually joined together,
+the visual selection shrinks removing entire lines,
+_but_ when it gets to what we expect to be the very last step where all the lines are joined,
+the visual select still spans two lines represented by the 'X's below:
 
 ```
   
   Join me with the the lines below and this one
   ^
-  XXXXXX...
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 XXX (up to 3 characters when they exist)
 ```
 
-Complete lines get removed from the visual selection, but the incomplete lines don't (particularly the last ones).
-That leaves two incomplete sections spanning 2 lines (and hence a newline).
-
-After the first replacement, the engine begins matching again and finds the newline after "one".
+The engine begins matching again and finds the newline after "one".
 It runs until the 3 backticks then has to backtrack to match `%V`.
-The last character that matches `%V` is the newline represented by the "XXX" above.
 
-Those 2 newlines get replaced with a space leading to a trailing space after "one".
+```
+ Join me with the the lines below and this one\n\n\n[BACKTICK]...
+ -------------------------------------------------                 visual selection
+                                              -->-->               \_s* runs until a backtick (consumes first newline)
+                                                <--<               backtrack until %V matches (before the middle newline)
+                                                --                 \_s (consumes middle newline)
 
-What's not clear though is why it would stop there and not continue destroying the remaining newlines
-as they continue to slide up into the visual selection.
-Modify the text block to have more trailing newlines and you'll see it still only eats 2 more than expected.
-There could be other strange implementation details that are causing the matching to stop at the point.
+                                              ----      final match is the two newline characters
+```
 
-## Summary of the bug
+The 2D visualization represents that the visual selection would take up to 3 characters on the next line
+when they're there. It's a linewise concept.
+The effect is that the middle newline is now considered "selected" when it _shouldn't_ be.
+This is the root of the bug - the middle newline slid up into the visual selection.
+
+Hence the engine backtracks until the middle newline which matches `%V`, then `\_s` consumes the middle newline.
+
+The first and second newlines get replaced with a space, leaving just the third newline between the text and the backticks.
+
+### Why doesn't it keep going?
+
+If this theory is correct, then wouldn't the engine continue to munch up newlines?
+
+After the first and second newline got matched and replaced by space, shouldn't the third newline
+and the 3 tildas slide up into the visual selection?
+If they're in the visual selection, then they should get matched to `%V\_s` and hence get replaced with a space.
+
+```
+ Join me with the the lines below and this one \n[BACKTICK x 3]
+ --------------------------------------------------------------   visual selection
+                                               ^^ match???
+                                               Replace with space???
+
+                                           one  [BACKTICK x 3]   ???
+```
+
+Yet we don't see "one" then two spaces, then 3 backticks.
+
+To emphasize the point, below is an example with 5 trailing newlines (which visually is 4 blank lines):
+
+- put your cursor on 'J'
+- do `v`
+- extend the selection down to "and this one"
+- do `:s/\v%V\s*$\_s*%V\_s/ /<enter>` as usual
+
+```
+
+  Join me
+    with the
+  the lines
+below
+
+ and this one
+
+
+
+
+```
+
+It should have just 3 trailing newlines (which visually is 2 blank lines) and a single space. Only 2 got replaced.
+
+```
+  Join me with the the lines below and this one\n\n\n\n\n[BACKTICK x 3]
+                                               ----  just 2 get replaced
+```
+
+### Remember ranges?
+
+So why isn't the bug affecting these other trailing newlines? Is it just getting tired and going home?
+
+The answer comes from the range generated by `'<,'>` when you hit `:`.
+
+Recall from a previous section how the range passed to a substitute command determines the overall text which the engine
+will consider when _starting_ matches.
+
+Matches can "prison break" out of that and end outside that range, but they can only _start_ in that range.
+
+Our visual selection started on the 'J' and stopped on the 'n' which translates to lines:
+
+```
+
+  Join me              |
+    with the           |
+  the lines            |  line range
+below                  |  '<, '>
+                       |
+ and this one          |
+
+
+
+
+```
+
+In 1D:
+
+```
+\n  Join me\n    with the\n  the lines\nbelow\n\n and this one\n\n\n\n\n
+    ------------------------------------------------------------
+              '<,'> defines these allowed starting points
+```
+
+The newline just after "one" _is_ a valid starting point.
+A match will start on that newline, and he and his brother will prison break outside the initial starting range
+because by the time the engine is processing them, his brother has slid into the visual selection
+and will match that final `%\_s`.
+
+That match completes and then the regex engine will stop because it's exhausted all the characters
+within the allowed starting positions.
+That means the other newlines can't get matched.
+
+It's a very cunning prison break that allows just one extra newline to sneak through.
+Most wardens wouldn't be able to spot that loophole!
+
+## Other bugs?
+
+The interleaving approach of `substitute` would create potential for other bugs.
+
+Let's have a quick poke around:
+
+## Lookbehind
+
+When a new match starts during a `substitute`, do lookbehinds see the old or new value?
+
+Suppose we did something like:
+
+- replace 'a' with 'X'
+- replace 'b' with 'X' if there's an 'X' before it
+
+In text like this, would the 'b' get replaced?
+
+```
+ab
+```
+
+If the first 'a' is replaced by an 'X' before the 'b' is processed,
+then maybe the 'b' will be considered to have an 'X' before it.
+
+- put your cursor on the line
+- do `V:s/\v(a|X@<=b)/X/g<enter>`
+
+That pattern means: 'a' OR 'b' with an 'X' before it (positive lookbehind).
+
+It turns out only the 'a' gets replaced (which is a relief).
+
+I think this means that the engine is using the original chunk of text for matching logic,
+but for context related logic (like `%V`) it's projecting what the final text would look like
+and applying changes to the visual area.
+
+### Single line visual selections
+
+Can we create a black hole singularity of finite width that relentlessly sucks in the characters after it?
+
+Let's delete any digit characters in our visual selection:
+
+- put your cursor on the '3'
+- do `vll` to select "345"
+- do `:s/\v%V\d//g`
+
+```
+0123456789
+```
+
+Maybe you expecting "6789" to also slide to the left into the death zone but they don't.
+
+You might think it's because the visual selection shrinks by one character as '3', '4' and '5'
+get killed off, but that's not the case.
+If you run `gv` after the substitution you'll see it's on "456".
+
+If you change the text to have multiple lines and make your visual selection go from '3' to '3'
+and use `\_d` instead you'll get the bug.
+It's the same kind of example as our previous one with the "aaaaaa" lines.
+
+```
+0123456789
+0123456789
+```
+
+A bug for the first simple case would get spotted more quickly when testing `%V` so I'm not surprised it works.
+What's more confusing is why it works fine but the multiline one doesn't work well.
+There's a bug in our bug...
+Perhaps when the engine sees `\_*` patterns, it changes mode internally and a different code path gets used.
+That different code path could be responsible for the bug.
+
+## Summary of the bug(s)
+
+Our first bug was the incorrect use of `%V`. It was causing one _too few_ newlines to get matched.
+The second bug was causing one _too many_ newlines to get matched.
+Hence the two of them cancelled out.
 
 Using substitute with `%V` can lead to unexpected replacements because search and replace seem to be interleaved.
 
-Because visual selections are static, they don't get updated properly to reflect the operations that happen within them.
+Instead of using the original visual selection and character positions prior to any substitution,
+it instead does a more stateful iterative process, replacing characters and updating the visual selection along the way.
 
-This means that a check for whether a character is in the visual selection doesn't reflect whether it was _originally_
-in the visual selection.
+As we've seen, this process of updating the visual selection is very inaccurate and inconsistent
+leaving ample room for bugs.
+In our case it would cause an extra newline to get sucked into the visual selection and get matched.
 
-This is probably a bug and might eventually get fixed.
-The example is more to show the issues you'll hit when trying to use complex logic with visual selections
-that cause the text in the selection to get changed.
+The other newlines got sucked into the visual area, but because they weren't in the original substitution line range,
+new matches didn't start on them.
+
+When we tried to replicate the bug in simpler scenarios it thankfully didn't manifest.
+
+Overall this is probably a bug with neovim and might eventually get fixed (I'll tell them about it).
+It was a pretty benign bug that was just chopping off one too many newlines.
+Hopefully though you learnt more about the nuances of regex engines and can see that combining complex stateful
+logic with visual mode is likely to hit bugs.
 
 # Summary
 
 Visual mode is a useful tool in some situations, but I'd encourage a mindset of seeing it as a last resort.
 
-There are some cases where they visual mode maes sense but it's much less in vim than other editors and it's good
-to train yourself off using it.
+There are some cases where visual mode makes the most sense,
+but it's much less in vim than other editors and it's good to train yourself off using it.
 
 For complex logic, visual mode can be dangerous because of the inconsistent unpredictable ways visual areas
 get updated when the text inside gets updated.
-
-TODO - go back through other articles and link the content to here
