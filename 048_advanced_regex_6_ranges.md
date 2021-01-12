@@ -247,7 +247,7 @@ This is another example of divergence between regex flavors.
 
 # Exercises
 
-As usual read through the setup rules from this section in the first advanced regex kata.
+See the [setup guide](advanced_regex_exercises_setup.md).
 
 ## Exercise 1
 

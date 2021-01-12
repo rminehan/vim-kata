@@ -122,7 +122,7 @@ Here "atom" just means a little atomic chunk of pattern.
 If it's complex pattern like "ita" in the previous example, wrap it in brackets to make it an atom.
 If it's already something simple like `\d` then it can have a look around attached to it without brackets.
 
-## Magi mode
+## Magic mode
 
 Above `@` is not escaped because we're assuming very magic mode.
 
@@ -149,14 +149,13 @@ You can see the full list by doing `:help pattern` then searching `^\\@` (all li
 
 # Exercises
 
-See notes from this section in the previous kata.
+See the [setup guide](advanced_regex_exercises_setup.md).
 
 ## Exercise 1 - positive look ahead
 
 We'll search for boban's that have an alphabetical letter after them.
 
 We can use `\a` ("alphabetical") to represent a letter. It's a shortened version of `[a-zA-Z]`.
-
 
 - highlight the below block with linewise highlight then hit `<escape>`
 - put your cursor on the "bobanita"

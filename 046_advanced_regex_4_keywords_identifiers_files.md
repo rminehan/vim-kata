@@ -76,9 +76,9 @@ corresponding to the path.
 
 # Exercises
 
-As usual, read this section from the first advanced regex kata.
+See the [setup guide](advanced_regex_exercises_setup.md).
 
-To put us all on the same page, we'll explicitly set what characters constitute keywords, identifiers and paths:
+Further, to put us all on the same page, we'll explicitly set what characters constitute keywords, identifiers and paths:
 
 ```vim
 " Set keywords to be just English alphabetical characters or underscore or asterix

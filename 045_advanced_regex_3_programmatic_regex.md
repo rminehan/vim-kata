@@ -6,12 +6,12 @@ In today's kata we're going to programmatically build regex patterns using vimsc
 
 Vimscript is the language your config file is written in and it's the language you use when you enter `:` commands.
 
-It's a fully fledged language in the sense that it has types like string and numeric, and operators and libraries
-to use with those types.
+It's a fully fledged language in the sense that it has if statements, loops,
+types like string and numeric and a standard library.
 
 Recall that `.` is the string concatenation operator, e.g. `:echo 'abc' . 'def'` should print 'abcdef'.
 
-Also remember that our registers we record macros into are just variables in vimscript we can programmatically modify.
+Also remember that registers we record macros into are just variables in vimscript we can programmatically modify.
 e.g. `:let @q = 'abc'` is the same as doing `qqabcq` from normal mode.
 
 # execute
@@ -70,7 +70,7 @@ As the logic gets more increasingly nested, escaping can start to get a bit mind
 
 # Exercises
 
-As usual read through the setup rules from this section in the first advanced regex kata.
+See the [setup guide](advanced_regex_exercises_setup.md).
 
 ## Exercise 1 - execute simple search
 

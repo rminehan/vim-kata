@@ -1,9 +1,8 @@
 # Advanced Regex 9 - Search shortcuts
 
-Today's kata is a miscellaneous collection of tips and shortcuts to make executing search and replace a little faster.
+Today's kata is a miscellaneous collection of tips and shortcuts to build search and replace operations more quickly.
 
-To clarify, I don't mean that the searches execute faster, I mean that it's quicker to launch the searches
-through being able to take shortcuts building them.
+To clarify, I don't mean that the searches themselves execute faster, but the process of building them is faster.
 
 # Empty search term
 
@@ -86,17 +85,17 @@ Some use cases for this:
 
 ## Issues with inccommand
 
-The `inccommand` can be set to make commands like `substitute` more interactive.
-For example in my config I have `set inccommand=split` which makes a little popup appear
-showing the effect of a substitute interactively as I update it. 
+In our [setup file](advanced_regex_exercises_setup.md) we covered the useful `set inccommand=split`
+to make `substitute` interactive.
 
-Note though that this completely messes up the meaning of `~` (the last substitution)
+Unfortunately this completely messes up the meaning of `~` (the last substitution)
 because the interactive nature of the search keeps updating it whilst you build your substitute command.
 By the time you've entered `:s/` the value of tilda is already the empty string.
 
 This makes for a very confusing experience and it makes sense to turn off `inccommand` if you're planning to
 interactively build `substitute` commands using `~`.
-Do this with: `:set inccommand=<enter>`.
+
+Do disable it, set it to an empty value: `:set inccommand=<enter>`.
 
 # Redoing a replace
 
@@ -189,7 +188,7 @@ I think the second one is much easier to read!
 
 # Exercises
 
-As usual look through the advanced regex exercise prep.
+See the [setup guide](advanced_regex_exercises_setup.md).
 
 Also for this exercise we'll turn _off_ `inccommand` as we're using `~` a fair bit:
 
@@ -525,3 +524,8 @@ you just need to have a vague memory that the concept exists, then use the cheat
 Also learn to use vim's built in help.
 When searching for pattern based stuff, usually it's `:help /` then the thing you're searching, 
 e.g. `:help /\%#` for matching the cursor.
+
+If you find regex interesting and want to understand where vim's engine sits in the grand scheme of things,
+[this](https://en.wikipedia.org/wiki/Comparison_of_regular-expression_engines) is a good article.
+In particular you can see how perl has a lot of features vim doesn't.
+If you want to try and use perl regex within vim, look into `:perl` and `:perldo`.

@@ -233,7 +233,7 @@ have you seen cousin Enxhell?
 
 # Exercises
 
-As usual read through the advanced regex exercise prep.
+See the [setup guide](advanced_regex_exercises_setup.md).
 
 ## Exercise 1 - simple palindromes
 

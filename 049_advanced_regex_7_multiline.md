@@ -155,7 +155,7 @@ These will be useful later for our whitespace cleaning.
 
 # Exercises
 
-As usual look over this section from the first advanced regex kata.
+See the [setup guide](advanced_regex_exercises_setup.md).
 
 ## Exercise 1
 

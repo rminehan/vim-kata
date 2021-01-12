@@ -93,7 +93,7 @@ If you move your cursor of the start of the word and hit `n` you should see it t
 
 # Exercises
 
-As usual read through the setup rules from this section in the first advanced regex kata.
+See the [setup guide](advanced_regex_exercises_setup.md).
 
 ## Exercise 1
 

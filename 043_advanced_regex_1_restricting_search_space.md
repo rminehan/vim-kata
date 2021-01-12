@@ -51,30 +51,12 @@ It's not _too_ big and worth having a quick browse through.
 
 # Exercises
 
-The exercises for this block of kata are designed to complement the [cheat sheet](advanced_vim_regex_cheat_sheet.md).
+For each of these advanced regex kata, there's some standard editor setup and notes.
 
-They assume you've got settings like:
+Because there's so many kata that use it,
+I moved it to [its own file](advanced_regex_exercises_setup.md) for quick reference.
 
-```vim
-set incsearch ignorecase smartcase
-```
-
-Usually each exercise has a back-tick'd block of text to search.
-
-Sometimes the exercises will suggest you put your cursor at a certain location so that the interactive search
-caused by `incsearch` won't cause a lot of jumping as you try to follow the instructions.
-The suggested location is usually a place where the regex will match most of the way whilst you type it out. 
-
-For some examples the match won't be near the instructions, e.g. anchoring to the start and end of the file.
-For those I'd recommend splitting your screen with `:split` or `:vsplit` before running the search so that one split
-stays on the instructions. You can close the split with `:q` or `:only`. You can jump between splits with `<c-w><c-w>`.
-
-Also while entering searches, you don't need to hit `<enter>` to lock in the pattern.
-`incsearch` will interactively show you the matches and you can just `<escape>` out of the search.
-Not hitting enter will prevent highlighting noise in your buffer.
-
-I'll also include relative vim help terms related to each exercise.
-Hopefully that will encourage you to start using vim's built in help!
+So have a look!
 
 ## Exercise 1 - limiting the search area
 
@@ -103,13 +85,13 @@ The block below has column markers for digits and tens (note that columns start 
 
 For this exercise, we'll find all the "bobans" contained entirely in columns 20-29.
 
-- use `V` to visually select the area between the dividing lines `----` then press escape
+- visually select the area between the dividing lines `----` then press escape
 - put your cursor on the "boban" in column 25 (first row) (he's the only lowercase one)
 - do `/\vboban` (all boban's in view should highlight due to case insensitivity)
 - add `%V`
     - what is _supposed_ to happen is that all boban's in the block highlight
     - but depending on your vim, only the lowercase one may highlight
-    - potentially the capital "V" is causing `smartcase` to disable case insensitivity (even though it's not a literal bug)
+    - potentially the capital "V" is causing `smartcase` to disable case insensitivity (even though it's not a literal)
 - do `\c` to explicitly turn on case-insensitivity (now all the boban's should match)
 - add `%<31c` (now only the boban's that _end_ before column 31 should highlight)
 - move your cursor back to just after the `\v` and add `%>19c`
@@ -287,9 +269,10 @@ Likewise there could be some edge cases at the bottom right of the visual select
 
 Advanced regex is powerful but usually not used enough to lock it into your brain.
 
-Hopefully today has made you aware that you can limit the area for matches and use look arounds,
-even if you can't remember the exact syntax.
+Hopefully today has made you aware that you can limit the area for matches even if you can't remember the exact syntax.
 
 From there you can look at the cheat sheet or use vim's built in `:help pattern` to get you what you need.
 
-Next time we'll carry on with more advanced regex.
+This is just the beginning of our deep dive into advanced regex.
+Going forward we'll particularly lean on `%V` from today to limit search patterns in later exercises to just
+the text block related to the exercise.
