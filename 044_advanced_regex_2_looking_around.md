@@ -113,7 +113,7 @@ The general syntax for look arounds in very magic mode is:
 where OPERATOR is one of:
 
 =   positive lookahead                   :help /\@=
-!   negative lookahead  (first exapmle)  :help /\@!
+!   negative lookahead  (first example)  :help /\@!
 <=  positive lookbehind (second example) :help /\@<=
 <!  negative lookbehind                  :help /\@<!
 ```
