@@ -155,8 +155,9 @@ So this section is really saying that there are times we need more sophisticated
 
 This is beyond today's kata, but you can look up:
 
-- using replace groups (e.g. `\1` syntax)
-- Tim Pope's awesome abolish plugin which contains the `Subvert` command
+- using back references (e.g. `\1` syntax)
+- using vimscript in your replacement
+- Tim Pope's awesome abolish plugin which contains the `Subvert` command (see [kata 52](052_subvert.md))
 
 # Search + dot?
 
@@ -179,11 +180,12 @@ Have you met Boban?
 
 This is equivalent to the interactive substitute mode, because at each point you get to choose what to do.
 
-If you wanted to upper case all the Boban's you could do a similar pattern to the above doing: `gUiw` on the first, then just use `.`.
+If you wanted to upper case all the Boban's you could do a similar pattern to the above doing:
+`gUiw` on the first, then just use `.`.
 This avoids building complex find-replace patterns.
 
 Substitute will still be useful in some cases (e.g. if there's many many replacements or you're writing a script),
 but you don't need it as much as you would in other editors because of the very powerful "operator + text object" combined with dot.
 
-It's because of this that I've left the substitute until later as we've already to encourage using the very general powerful tools
+It's because of this that I've left the substitute until later to encourage using the very general powerful tools
 from the earlier lessons. There was a simialar rationale for delaying visual mode and macros.
