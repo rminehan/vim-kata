@@ -160,3 +160,21 @@ See kata 50.
 - `g&` redoes the last substitute against the whole buffer (and remembers flags)
 
 See kata 51.
+
+# Miscellaneous
+
+```
+\%[...]  sequences                      :help /\%[    (kata 50)
+\h       head of word      [A-Za-z_]    :help /\h
+\H       non-head of word  [^A-Za-z_]   :help /\H
+\a       alphabetic        [A-Za-z]     :help /\a
+\A       non-alphabetic    [^A-Za-z]    :help /\A
+\l       lowercase         [a-z]        :help /\l
+\L       non-lowercase     [^a-z]       :help /\L
+\u       uppercase         [A-Z]        :help /\u
+\U       non-uppercase     [^A-Z]       :help /\U
+```
+
+Note the help says:
+
+> Using the atom is faster than the [] form.
