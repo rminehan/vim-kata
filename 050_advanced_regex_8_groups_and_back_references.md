@@ -163,6 +163,30 @@ replaces to:
 
 Note above to make the literal `&` appear, I had to escape it.
 
+## Non-capturing groups
+
+If you put `%` before a `(...)` group, it doesn't capture it.
+
+For example: apply this below:
+
+```
+s/\v(\w+)-%(\d+)-(\w+)/\1-\2
+
+# Before
+abc-0123-def
+
+# After
+abc-def
+```
+
+Above, `\2` refers to the third bracketed group, because the middle digit one wasn't counted.
+
+`:help /\%(` also mentions:
+
+> This allows using more groups and it's a little bit faster.
+
+Note in magic mode and down you'd use `\%`.
+
 ## Size limit
 
 Vim only supports up to the 9 groups in a pattern.
@@ -181,6 +205,14 @@ E872: (NFA regexp) Too many '('
 ```
 
 This means that back references only go up to the letter 9.
+
+If we mark one of them as non-capturing though, we just fit under the limit:
+
+```vim
+" This will find blocks of 9 characters
+/\v(.)(.)(.)(.)(.)(.)(.)(.)(.)%(.)
+"   1  2  3  4  5  6  7  8  9 ^ non capturing
+```
 
 # Using back references in searches
 

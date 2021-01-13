@@ -133,7 +133,9 @@ See kata 49.
 
 `\0` and `&` represent the entire match.
 
-Vim supports at most 9 groups.
+Put `%` before groups to mark them as non-capturing.
+
+Vim supports at most 9 capturing groups.
 
 See kata 50.
 
