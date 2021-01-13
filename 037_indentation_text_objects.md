@@ -4,9 +4,11 @@ This kata introduces text objects to group up lines based on relative indentatio
 
 We often find ourselves in situations like:
 
-> Comment out all lines at the same indentation level as my current line
-
 > Comment out all lines at the same indentation level as my current line or deeper
+
+> Left indent all lines at the same indentation level as my current line or deeper
+
+This plugin introduces a text object that makes these kinds of changes dead simple.
 
 # Plugins
 
@@ -18,7 +20,7 @@ In our case we need [vim-indent-obj](https://github.com/michaeljsmith/vim-indent
 
 The plugin is based around a text object representing lines at the same or deeper indentation as the current line.
 
-All the permutations of it are just related to include leading and trailing parent lines.
+All the permutations of it are just related to including leading and trailing parent lines.
 
 From the perspective of including or excluding:
 
@@ -27,10 +29,10 @@ From the perspective of including or excluding:
 
 From the perspective of leading vs trailing:
 
-- `*i` - just leading parent line
+- `*i` - just leading parent line (and trailing whitespace)
 - `*I` - leading and trailing parent line
 
-For example `ai` means "lines at the same or deeper indentation and an optional leading blank line".
+Let's look at some examples:
 
 ```
 Level 1
@@ -111,6 +113,9 @@ Paragraph based text objects would be useless here, but
 - `ii` or `iI` would capture the 2 instructions and all comments
 - `aI` would capture the instructions, comments and the `if` and closing `}`
 
+So if your codebase tends to represent logical structure using indentation levels,
+then the indentation text objects start to become a bit "language aware".
+
 # Back to `<` and `>`
 
 In the conclusion of [kata 34](034_indentation.md) I mentioned how indentation operators work really nicely
@@ -120,6 +125,14 @@ rather than learning the 37 other ways to shift text in vim.
 Exercise 1 below demonstrates this point.
 
 # Exercises
+
+We'll be doing some shifting operations below with `<` and `>`.
+
+To get everyone on the same page, do:
+
+```
+set shiftwidth=2
+```
 
 ## Exercise 1
 
@@ -200,6 +213,65 @@ def isBoban(person: Person): Boolean = {
   }
 }
 ```
+
+# Exercise 3 - level 1 indentation
+
+The text object behave a little differently when you're right against the left margin.
+
+Concepts like `ai` and `aI` don't make sense here because there is no parent.
+
+Also `ii` would represent the entire buffer as _everything_ is at the same level of indentation
+or deeper when you're not indented.
+
+So the text objects change meaning slightly. We'll understand this by testing out:
+
+- put your cursor on 1b
+- do `vii` (the paragraph should highlight)
+- hit escape and reposition your cursor
+- do `vai` (the paragraph and one line of whitespace above should highlight)
+- hit escape and reposition your cursor
+- do `vaI` (the paragraph and one line of whitespace above and below should highlight)
+
+```
+
+
+Level 1a
+  Level 2a
+  Level 2b
+Level 1b
+  Level 2c
+
+Level 1c
+  Level 2d
+    Level 3a
+
+
+```
+
+From the [help page](https://github.com/michaeljsmith/vim-indent-object/blob/master/doc/indent-object.txt):
+
+> When scanning code blocks, the plugin usually ignores blank lines.
+> There is an exception to this, however, when the block being selected is not indented.
+> In this case if blank lines are ignored, then the entire file would be selected.
+> Instead when code at the top level is being indented blank lines are considered to delimit the block.
+
+So this is a deliberate features.
+
+The effect is that the:
+
+- `ii` is equivalent to `ip` (inside paragraph)
+- `ai` is like `ip` with an extra line of whitespace above
+- `aI` is like `ap` with an extra line of whitespace above
+
+The help also says we can turn this off with:
+
+```vim
+let g:indent_object_except_first_level = 0
+```
+
+Run the above ex command and repeat the exercise
+You should select the entire buffer each time.
+Also you can run the commands from anywhere in the buffer, it won't make a difference.
 
 # Conclusion
 
