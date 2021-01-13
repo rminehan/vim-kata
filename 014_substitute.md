@@ -50,11 +50,19 @@ it will prepopulate the range with `'<,'>` which effectively represents the line
 
 Hence `'<,'>` is just sticking a comma between them to define a range.
 
-You could do something like `'<,20` to represnt from the start of the last visual selection to line 20.
+You could do something like `'<,20` to represent from the start of the last visual selection to line 20.
 
 # Replace preview
 
-Neovim has a nice interactive preview which shows you the changes as they occur.
+Vim has a nice interactive preview which shows you the changes as they occur. Enable it with:
+
+```vim
+set inccommand=split
+```
+
+You can also set it to `nosplit` which shows the changes in the buffer rather than a preview window.
+
+See `:help inccommand`
 
 # Common regex args
 
@@ -147,8 +155,8 @@ text was being used as the formal "Boban" or the nickname "Bobn".
 
 It would be nice for example to map "bobn" to Enxell's nickname "junior" to preserve the original nuance of the text.
 
-Likewise sometimes the plural form of a word change. For example the plural of "Boban" is "Bobans"
-but the plural of "Enxhell" is "Enxhellens".
+Likewise sometimes the plural form of a word changes. For example the plural of "Boban" is "Bobans"
+but the plural of "Enxhell" is "Enxhellen".
 If we did a direct replacement of Boban to Enxhell, then "Bobans" would become "Enxhells" which is incorrect.
 
 So this section is really saying that there are times we need more sophisticated replace logic.
@@ -159,33 +167,37 @@ This is beyond today's kata, but you can look up:
 - using vimscript in your replacement
 - Tim Pope's awesome abolish plugin which contains the `Subvert` command (see [kata 52](052_subvert.md))
 
-# Search + dot?
+# Substitute vs search + dot?
 
-Do we really need the substitute command? Often the answer is no.
+Substitute is one way to transform text matching a pattern.
 
-In exercise 1 we wanted to do a vanilla replacement of "Boban" to "Enxhell". We could have:
+Another way is to manually search for each instance using `/` and use `.` to apply the same kind of change at each match.
 
-- search for Boban with `/Boban`
-- hit `n` until you're on the first Boban in the text block
-- do `ciwEnxhell` to change it to "Enxhell"
-- hit `n` to move to the next match
-- do `.` to repeat the last action
-- continue on this way
+[This article](substitute_vs_dot.md) discusses the pro's and con's of each.
 
-```
-Boban is a plucky young Albanian.
-Boban would often say "mate" to sound Australian. That's very Boban!
-Have you met Boban?
-```
+Also later we'll introduce the [`gn` text object](038_search_text_object.md).
 
-This is equivalent to the interactive substitute mode, because at each point you get to choose what to do.
+# More advanced substitute tricks
 
-If you wanted to upper case all the Boban's you could do a similar pattern to the above doing:
-`gUiw` on the first, then just use `.`.
-This avoids building complex find-replace patterns.
+In much later kata we'll look at more powerful things that can be achieved with `substitute` and its cousin `Subvert`:
 
-Substitute will still be useful in some cases (e.g. if there's many many replacements or you're writing a script),
-but you don't need it as much as you would in other editors because of the very powerful "operator + text object" combined with dot.
+- [kata 50 - groups and back references](050_advanced_regex_8_groups_and_back_references.md)
+- [kata 51 - regex shortcuts](051_advanced_regex_9_search_shortcuts.md)
+- [kata 52 - Subvert](052_subvert.md)
 
-It's because of this that I've left the substitute until later to encourage using the very general powerful tools
-from the earlier lessons. There was a simialar rationale for delaying visual mode and macros.
+# Summary
+
+`substitute` is the equivalent of "find-replace" that you find in most text editors.
+
+Because you're familiar with find-replace, you might automatically go to it for tasks that could actually
+be completed using other techniques like:
+
+- change and `.`/`n` or `gn`
+- `normal` or `global` commands
+- macros
+- `Subvert`
+- a well made plugin
+
+(some of which we haven't covered yet)
+
+Still there are times when I think it's the best tool for the job and it's worth learning.
