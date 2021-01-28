@@ -463,7 +463,7 @@ It's unlikely this bug will ever effect you as:
 
 - it requires a fairly artificial setup
 - the consequences of it aren't particularly bad and often you wouldn't even realize it happened
-- it will probably get fixed eventually get fixed
+- it might get fixed eventually
 
 So the point of reading this section is not to make you aware of the bug,
 it's to deepen your knowledge and make you more aware of the kinds of edge cases you'd hit
@@ -1175,7 +1175,9 @@ new matches didn't start on them.
 
 When we tried to replicate the bug in simpler scenarios it thankfully didn't manifest.
 
-Overall this is probably a bug with neovim and might eventually get fixed (I'll tell them about it).
+Overall this is probably a bug with neovim and might eventually get fixed.
+I've posted a bug report [here](https://github.com/neovim/neovim/issues/13838)
+and maybe the neovim developers can shed more light on it.
 It was a pretty benign bug that was just chopping off one too many newlines.
 Hopefully though you learnt more about the nuances of regex engines and can see that combining complex stateful
 logic with visual mode is likely to hit bugs.

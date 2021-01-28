@@ -163,12 +163,14 @@ You won't see the effect of adding `\d` and then `{}` after it - only the final 
 
 # Possible bug with smartcase and %V
 
-In my neovim, when I include `%V` in a pattern it seems to trigger smartcase to make the pattern case sensitive.
+In my neovim 0.4.4 and vim 8, when I include `%V` in a pattern it seems to trigger smartcase to make the pattern case sensitive.
 
-I'm guessing it's seeing the capital 'V' in `%V` and engaging case sensitivity.
+I'm guessing it's seeing the capital 'V' in `%V` and `smartcase` is engaging case sensitivity.
 
 In cases where we're affected by this bug and we want case insensitivity, we'll put `\c` in our pattern.
 We're allowed to put it anywhere but putting in near the front with `\v` gets it out of the way.
+
+I've posted an issue [here](https://github.com/neovim/neovim/issues/13837).
 
 # Help
 
