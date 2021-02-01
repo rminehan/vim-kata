@@ -95,11 +95,11 @@ By the time you've entered `:s/` the value of tilda is already the empty string.
 This makes for a very confusing experience and it makes sense to turn off `inccommand` if you're planning to
 interactively build `substitute` commands using `~`.
 
-Do disable it, set it to an empty value: `:set inccommand=<enter>`.
+To disable it, set it to an empty value: `:set inccommand=<enter>`.
 
 # Redoing a replace
 
-From normal mode, `&` repests the last substitution but applied to the current line with no args (see `:help &`).
+From normal mode, `&` repeats the last substitution but applied to the current line with no args (see `:help &`).
 
 For example if we'd run `%s/A/B/gi` as our last substitution somewhere,
 then hitting `&` will run `s/A/B` against the current line.
