@@ -52,7 +52,7 @@ In a situation like that the `.` and `^` marks are really useful.
 - enter "Boban"
 
 ```scala
-def person(id: String, age: Int, firstNamen: String): Person = ...
+def person(id: String, age: Int, name: String): Person = ...
 
 val boban = person()
 ```
@@ -127,7 +127,7 @@ This is a range in the `[START],[END]` form with:
 
 A single quote here means "the line for this mark".
 
-For example `'a,'b` would specify range from mark `a` to mark `b`.
+For example `'a,'b` would specify the range from mark `a` to mark `b`.
 
 In our case
 
