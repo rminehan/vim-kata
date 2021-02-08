@@ -85,7 +85,7 @@ Hence the duplicate lines don't yet exist in that first pass and we avoid these 
 
 Move all the uncommented lines from the first block to the empty second block below it.
 
-This line we're wanting to _move_ lines, so we'll need a new ex command: `move` (or `m`).
+This time we're wanting to _move_ lines, so we'll need a new ex command: `move` (or `m`).
 
 The `move` command syntax is: `:[RANGE] move [DESTINATION]`
 which moves the lines specified by `RANGE` to below `DESTINATION`.
@@ -142,7 +142,7 @@ Overall the effect is reversing the lines.
 
 The reason it didn't happen in the `move` exercise, was because we were deleting the line from the original
 block which shifted everything below it up 1 line.
-This meant that line 108 no longer represented the backtick line, but was tracking the last copied line.
+This meant that line 108 no longer represented the backtick line, but was tracking the last moved line.
 
 How to fix the reversing?
 The issue is that fixed line numbers are too static.
@@ -209,4 +209,3 @@ As you learn more ex commands, you'll be able to combine them arbitrary search p
 
 It's worth learning a few of the basic ex commands (like `copy`, `move`, `yank` and `paste`)
 to enhance your vim superpowers.
-
