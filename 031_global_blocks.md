@@ -1,6 +1,6 @@
 # Global Blocks
 
-There is another form for the normal command which we haven't covered,
+There is another form for the global command which we haven't covered,
 and that's for "blocks".
 
 ```
@@ -9,7 +9,7 @@ and that's for "blocks".
 
 (We'll see below that this is a lie but roll with it for now)
 
-You can pass _two_ patterns to the normal command to define "blocks" in your code:
+You can pass _two_ patterns to the global command to define "blocks" in your code:
 
 - the start pattern + offset describes the start of each block
 - the end pattern + offset describes the end of each block
