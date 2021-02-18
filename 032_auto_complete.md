@@ -75,6 +75,10 @@ Use this complete the sentence below to "Boban the Bobanish"
 - hit `<c-n>` or `<c-l>` until "Boban the Bobanish" is selected
 - hit escape to go back to normal mode as there's nothing else to type
 
+```
+Boban the
+```
+
 ## Exercise 3
 
 In this directory we have lots of kata files.
