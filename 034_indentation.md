@@ -115,7 +115,7 @@ To make sure we've all got the same indentation, do `set shiftwidth=2`.
 
 Make the second and fourth blocks below line up with the rest:
 
-- put your cursor on the second paragraph ("The story of the whild Boban")
+- put your cursor on the second paragraph ("The story of the wild Boban")
 - do `>ip` (right shift inside paragraph)
 - hammer `.` until it visually lines up
 - (looks like we needed 4 shifts overall)
