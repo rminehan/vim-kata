@@ -153,7 +153,7 @@ We'll do the same exercise but using the first form of the ex commands:
 - put your cursor on the first line of the second block
 - do `.,+1 >>>><enter>`
 - (unfortunately we can't use `.` to repeat this)
-- put your cursor on the second line of the second block 
+- put your cursor on the second line of the fourth block 
 - do `.,-1 >>>><enter>`
 - do `u` to undo
 - do `vip:` to visually highlight the block then convert it to a range
