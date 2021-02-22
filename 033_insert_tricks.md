@@ -95,7 +95,7 @@ Enxhel
 
 Keep in mind that each buffer has its own insert jump list.
 
-So `gi` will take you to your most recent inser in the current buffer,
+So `gi` will take you to your most recent insertion in the current buffer,
 but that might not be the most recent inser you've made overall.
 
 # What about the regular jump list
