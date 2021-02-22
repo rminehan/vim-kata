@@ -105,7 +105,7 @@ Some examples of the second form:
 Unfortunately you can't use negative numbers with the second form to represent a block of
 lines going up.
 
-Also these ex commands are dot repeatable :sad-parrot:
+Also these ex commands are NOT dot repeatable :sad-parrot:
 
 # Exercises
 
