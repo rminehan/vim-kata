@@ -187,9 +187,9 @@ We'll do the same exercise using the second form of the ex command:
 ```
 
 - put your cursor on the first line of the second block
-- do `:>> 4`
+- do `:>> 3`
 - put your cursor on the first line of the fourth block
-- do `:>> 4`
+- do `:>>>> 3`
 
 ```scala
 def paragraph: String = {
