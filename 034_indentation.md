@@ -105,7 +105,7 @@ Some examples of the second form:
 Unfortunately you can't use negative numbers with the second form to represent a block of
 lines going up.
 
-Also these ex commands are dot repeatable :sad-parrot:
+Also these ex commands are NOT dot repeatable :sad-parrot:
 
 # Exercises
 
@@ -115,7 +115,7 @@ To make sure we've all got the same indentation, do `set shiftwidth=2`.
 
 Make the second and fourth blocks below line up with the rest:
 
-- put your cursor on the second paragraph ("The story of the whild Boban")
+- put your cursor on the second paragraph ("The story of the wild Boban")
 - do `>ip` (right shift inside paragraph)
 - hammer `.` until it visually lines up
 - (looks like we needed 4 shifts overall)
@@ -153,7 +153,7 @@ We'll do the same exercise but using the first form of the ex commands:
 - put your cursor on the first line of the second block
 - do `.,+1 >>>><enter>`
 - (unfortunately we can't use `.` to repeat this)
-- put your cursor on the second line of the second block 
+- put your cursor on the second line of the fourth block 
 - do `.,-1 >>>><enter>`
 - do `u` to undo
 - do `vip:` to visually highlight the block then convert it to a range
@@ -187,9 +187,9 @@ We'll do the same exercise using the second form of the ex command:
 ```
 
 - put your cursor on the first line of the second block
-- do `:>> 4`
+- do `:>> 3`
 - put your cursor on the first line of the fourth block
-- do `:>> 4`
+- do `:>>>> 3`
 
 ```scala
 def paragraph: String = {
