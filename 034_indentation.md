@@ -69,7 +69,7 @@ You can shift it once (e.g. `>ip`) and then hammer the dot operator until it's w
 This isn't that bad. For large indentations (like 3+ jumps) it's too hard to visually determine
 how many jumps you want to do and if you get it wrong, doing undo will undo the whole things.
 
-At least with hammering dot, it's easy to course correct if you go to far.
+At least with hammering dot, it's easy to course correct if you go too far.
 
 ## Visually select
 
@@ -151,10 +151,10 @@ We'll do the same exercise but using the first form of the ex commands:
 ```
 
 - put your cursor on the first line of the second block
-- do `.,+1 >>>><enter>`
+- do `:.,+1 >>>><enter>`
 - (unfortunately we can't use `.` to repeat this)
 - put your cursor on the second line of the fourth block 
-- do `.,-1 >>>><enter>`
+- do `:.,-1 >>>><enter>`
 - do `u` to undo
 - do `vip:` to visually highlight the block then convert it to a range
 - add `>>>><enter>` onto the command
@@ -231,10 +231,10 @@ It also makes your changes more reusable on other blocks with `.` which you don'
 
 Further in [kata 37](037_indentation_text_objects.md) we'll actually look at indentation based text objects.
 Often you're wanting to indent a bunch of lines that are all at the same level and to use those ex commands
-you've going to be manually counting the lines.
+you're going to be manually counting the lines.
 Indentation based text objects make that a lot easier, you just say: "right shift everything at this level of indentation".
 So that is another benefit of going with the text object based approach.
 
 Finally don't forget that there is also the `=` operator for formatting text objects.
 Chances are you're indenting code to bring it into adherence with some basic formatting rules,
-so formatting some broader text object might get you what you want without having to fiddly with smaller blocks of code.
+so formatting some broader text object might get you what you want without having to fiddle with smaller blocks of code.
