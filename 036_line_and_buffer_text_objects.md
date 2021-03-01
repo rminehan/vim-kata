@@ -17,10 +17,13 @@ As mentioned in the previous kata, we're using custom text objects provided by p
 
 For today you'll need:
 
+- [vim-textobj-user](https://github.com/kana/vim-textobj-user)
 - [vim-textobj-entire](https://github.com/kana/vim-textobj-entire)
 - [vim-textobj-line](https://github.com/kana/vim-textobj-line)
 
-These give us text objects for our buffer and line.
+The first plugin is a general purpose tool for building custom text objects.
+
+The latter two use it to define buffer and line text objects.
 
 ## "Entire"
 
