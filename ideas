@@ -1,0 +1,24 @@
+# Plugins
+
+Add some general instructions for setting up plugins.
+
+Or a demonstration init.vim file under version control (plus vim plugged directory gitignored) and a way to start vim against that.
+
+That way they can use the kata if there's something wrong with their environment.
+
+# Buffer stuff?
+
+The alternate buffer.
+
+%:h
+
+# Built in terminal
+
+And the floating terminal plugin.
+
+Codi roughly falls into this group.
+
+# Blogs
+
+Move all the blogs to their own folder
+
