@@ -11,7 +11,7 @@ from your cursor onwards.
 
 Like usual, we can combine `gn` with our existing operators.
 
-For example supposed our last search was "boban" and we did `cgnbobanita<escape>`:
+For example: suppose our last search was "boban" and we do `cgnbobanita<escape>`:
 
 - `c` - change operator
 - `gn` - next match for "boban"
@@ -23,10 +23,10 @@ For example supposed our last search was "boban" and we did `cgnbobanita<escape>
 `gn` is a bit confusing in that if you want to visually select the next match,
 rather than doing `vgn`, you just do `gn`.
 
-Doing `vgn` will put you insert visual mode and then extend the selection to the end of
+Doing `vgn` will put you into visual mode and then extend the selection to the end of
 the next search match (where `n` would extend you to the front of the match).
 
-This might feel inconsistent because you're using to doing say `vip` for "select paragraph"
+This might feel inconsistent because you're used to doing say `vip` for "select paragraph"
 or `vae` for selecting the whole buffer or `val` for selecting the current line.
 
 Keep in mind though, those are cases where your cursor is already inside the text object you're targeting.
@@ -62,7 +62,7 @@ Then you might reply: We can do this with the interactive `substitute` command, 
 That's true, but there might be operators we want to apply to the match that can't be represented by the
 substitute command on a complex regex pattern (or it's tedious to do it),
 for example uppercasing, lowercasing, toggling case, surrounding with tags (ala vim-surround).
-And we might not want to have to go cycle through all the matches, just nearby ones.
+And we might not want to have to cycle through all the matches, just nearby ones.
 
 So whilst `gn` doubles up with other functionality we've already covered in some way,
 I would flip it around and say you should view `gn` as the "default" as it lets us use "operator + text object" style
@@ -117,7 +117,7 @@ string we'd end up being stuck on the same replacement.
 Uppercase all the boban's in the block below. Don't uppercase false positive matches like "bobanita" and "mcboban".
 
 Note: Usually we'd deliberately put word boundaries into the search term to reduce false positives,
-but the point of this kata is to get your skipping matches and do the equivalent of an interactive `substitute`.
+but the point of this kata is to get you skipping matches and do the equivalent of an interactive `substitute`.
 
 Also make sure you've got case insensitivy switched on so that `/boban` matches "Boban" (`set ignorecase`).
 
