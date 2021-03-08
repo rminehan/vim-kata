@@ -402,7 +402,7 @@ gUae
 This uppercases the whole buffer but assumes you have the `ae` buffer text object installed from [kata 36](036_line_and_buffer_text_objects.md).
 
 Regarding neovim and classic vim, they are gradually starting to diverge too.
-Neovim tends to move faster and adds features like lua support that classic won't have.
+Neovim tends to move faster and adds features like lua support that classic vim won't have.
 
 ## Ergonomics
 
@@ -451,7 +451,7 @@ Likewise with ranges, there are shortcuts that aren't helpful for less experienc
 
 e.g. `.,.+3` instead of `,+3` (don't drop the `.` even though you can).
 
-Likewise you space out ex commands:
+Likewise space out ex commands:
 
 e.g. `:% substitute /boban/enxhell/g` instead of `:%substitute/boban/enxhell/g`
 
