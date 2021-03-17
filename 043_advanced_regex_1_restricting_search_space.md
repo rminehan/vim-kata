@@ -86,7 +86,6 @@ The block below has column markers for digits and tens (note that columns start 
 For this exercise, we'll find all the "bobans" contained entirely in columns 20-29.
 
 - visually select the area between the dividing lines `----` then press escape
-- put your cursor on the "boban" in column 25 (first row) (he's the only lowercase one)
 - do `/\vboban` (all boban's in view should highlight due to case insensitivity)
 - add `%V`
     - what is _supposed_ to happen is that all boban's in the block highlight
@@ -139,16 +138,16 @@ But the docs and most examples will be for magic mode where escaping is necessar
 
 For this exercise we'll repeat the above example using line numbers instead of `%V`.
 
-We'll use a pattern like `\v%>111l%<117l%>19cboban%<31c`:
+We'll use a pattern like `\v%>161l%<167l%>19cboban%<31c`:
 
 ```
-\v%>175l%<181l%>19cboban%<31c       \v     - very magic           %>19c - after column 19
---      ------     -----            %>175l - after line 111       boban - literal "boban"
-  ------      -----     -----       %<181l - before line 117      %<31c - before column 31
+\v%>161l%<168l%>18cboban%<31c       \v     - very magic           %>19c - after column 19
+--      ------     -----            %>161l - after line 161       boban - literal "boban"
+  ------      -----     -----       %<167l - before line 167      %<31c - before column 31
 ```
+
 
 - determine the first line number and last line numbers for the two `---` delim lines below
-- put your cursor on "boban" again
 - `/\v` to start a very magic search
 - add `%>` then put in the line number of the first `---` delim, then the letter `l`
 - add `%<` then put in the line number of the second `---` delim, then the letter `l`
@@ -188,7 +187,6 @@ Then the pattern will look like:
 
 - put your cursor on the first delim line and do `ma`
 - put your cursor on the second delim line and do `mb`
-- put your cursor on "boban"
 - do `/\v` to start a very magic search
 - add `%>\'a` to signal "after mark `a`" - note this will include some of the tail of the first delim line
 - add `%<\'b` to signal "before mark `b`" - like above this will include some of the head of the second delim line
@@ -230,7 +228,6 @@ For this one, we'll use regular magic mode (the default) just to mix things up a
 to understand. It does mean we have to escape the `%`'s.
 
 - visually select the block below then hit escape
-- put your cursor on "boban"
 - start a regular search with `/`
 - add `\%>'<` to signal "after mark `<`"
 - add `\%<'>` to signal "before mark `>`"
@@ -241,13 +238,13 @@ to understand. It does mean we have to escape the `%`'s.
 ```
 123456789012345678901234567890123456789
 0        10        20        30        40
----------------------------------------------------- (put cursor on this line and do `ma`)
+----------------------------------------------------
 Boban    |         |    boban|         |
          |Boban    Boban     |         |
          |     Boban     Boban     Boban
          |         |  BOBAN  Boban     | BoBaN
 Boban    |        Boban  Boban         |
----------------------------------------------------- (put cursor on this line and do `mb`)
+----------------------------------------------------
 ```
 
 The final pattern should be `\%>'<\%<'>\%>19cboban\%<31c`
