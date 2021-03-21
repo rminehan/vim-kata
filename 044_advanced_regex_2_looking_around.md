@@ -175,7 +175,7 @@ ahbobanita     BOBAN               Bobanson           ahboban
 
 The final pattern should be: `/\v%V\cboban\a@=`
 
-It should match the boban's from "boban", "BOBAN", "boban-jones" and "bobanJo".
+It should match the boban's from "bobanita", "ahbobanita", "Bobanson" and "bobanJo".
 
 ## Exercise 2 - a negative outlook
 
