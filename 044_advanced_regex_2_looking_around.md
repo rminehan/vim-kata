@@ -23,16 +23,16 @@ ahboban              REPLACE
 
 A pattern like `boban` is too permissive in that it will match the "boban" in "bobanita".
 
-You could create a pattern that says: "boban" + 3 characters that aren't "ita", e.g. `boban[^i][^t][^a]`.
+With our current tools, the best we can do is create a pattern like:
 
-This is ugly and it doesn't work because it matches the "boban ju" in "boban junior" as:
+> "boban" + 3 characters that aren't "ita", e.g. `boban[^i][^t][^a]`.
 
-- ' ' isn't 'i' hence matches `[^i]`
-- 'j' isn't 't' hence matches `[^t]`
-- 'u' isn't 'a' hence matches `[^a]`
+This will consume 3 characters after our "boban" though. It will match the "boban ju" in "boban junior".
 
 If we did a replace operation, we'd end up with "Enxhellnior" (a Spanish Enxhell) when
 "Enxhell junior" is what was wanted (even though it's a truism).
+
+We need a way to specify not matching something, but _without consuming characters_.
 
 ## Negative lookahead example
 
@@ -65,13 +65,13 @@ boban(ita)@!            boban - literal "boban"
 
 Overall it means: "boban" not followed by "ita".
 
-## Positive lookahead example
+## Positive lookbehind example
 
 Let's flip the problem around.
 
 Suppose we want to replace all the boban's with enxhell's, but _only if_ they have "mc" or "ah" before them.
 
-When we do the replacement we want to preserve the prefix, so we don't want to include it in the matched text itself.
+When we do the replacement we want to preserve the prefix, so we don't want the match to consume those characters.
 
 Visually highlight the block below then hit escape.
 
@@ -101,7 +101,90 @@ It's different to the previous example in two aspects:
 Lookahead and lookbehind are more general regex concepts not specific to vim,
 but vim's way of expressing it probably won't be the same as other regex engines you come across.
 
-# General syntax
+# Exercises
+
+See the [setup guide](advanced_regex_exercises_setup.md).
+
+## Exercise 1 - positive look ahead
+
+We'll search for boban's that have an alphabetical letter after them.
+
+We can use `\a` ("alphabetical") to represent a letter. It's a shortened version of `[a-zA-Z]`.
+
+- highlight the below block with linewise highlight then hit `<escape>`
+- start a magic case insensitive search on the block with `/\v%V\c`
+    - the `\c` relates to the potential bug pointed out last kata with `%V` triggering `smartcase`
+- add `boban` (all the terms should light up)
+- add `\a@=` (meaning "must have a letter after it)
+    - `\a` - letter
+    - `@` - look around operator attached to the previous atom `\a`
+    - (no direction specified - defaults to forwards)
+    - `=` - positive
+
+```
+boban          bobanita            mcboban            boban-jones    bobanJo
+ahbobanita     BOBAN               Bobanson           ahboban
+```
+
+The final pattern should be: `/\v%V\cboban\a@=`
+
+It should match the boban's from "bobanita", "ahbobanita", "Bobanson" and "bobanJo".
+
+## Exercise 2 - a negative outlook
+
+Search for lonely boban's with no alphabetical letters before or after.
+
+We'll use a negative lookbehind and negative lookahead.
+
+- highlight the below block with linewise highlight then hit `<escape>`
+- start a magic case insensitive search on the block with `/\v%V\c`
+- add `boban` (all the terms should light up)
+- add `\a@!` (meaning "must not have a letter after it)
+    - this should reduce the matches a lot but will still include errors like "mcboban"
+- move your cursor back to just before the 'b' of "boban"
+- add `\a@<!` (meaning "must not have a letter before it)
+
+```
+boban          bobanita            mcboban            boban-jones    bobanJo
+ahbobanita     BOBAN               Bobanson           ahboban
+```
+
+The final pattern should be: `/\v%V\c\a@<!boban\a@!`
+
+There should be 3 matches:
+
+- "boban"
+- "BOBAN"
+- the "boban" from "boban-jones".
+
+## Exercise 3 - Singaporean Boban's
+
+Search for Singaporean ahboban's, but not ahbobanita's.
+
+We'll need a positive look behind for "ah" and a negative look ahead for "ita".
+
+According to Professor Zij, prefixing a name with "ah" is a "diminutive" form.
+Equivalent to "Fred" becoming "Freddy" in English.
+It's used in Singapore and some other nearby Asian areas like Hong Kong.
+
+- highlight the below block with linewise highlight then hit `<escape>`
+- start a magic case insensitive search on the block with `/\v%V\c`
+- add `boban` (all the terms should light up)
+- add `(ita)@!` (meaning "must not have "ita" following it)
+    - this should knock out "ahbobanita" and "bobanita"
+- move your cursor back to just before the 'b' of "boban"
+- add `(ah)@<=` (meaning "must have "ah" before it)
+
+```
+boban          bobanita            mcboban            boban-jones    bobanJo
+ahbobanita     BOBAN               Bobanson           ahboban
+```
+
+The final pattern should be: `/\v%V\c(ah)@<=boban(ita)@!`
+
+This should match just the boban in "ahboban".
+
+# Recap: General syntax
 
 ## Very magic mode
 
@@ -146,110 +229,6 @@ PARITY:    = for "positive" and ! for "negative"
 There are other operators that can be used with `@` but we'll just focus on these 4 today.
 
 You can see the full list by doing `:help pattern` then searching `^\\@` (all lines starting with "\@").
-
-# Exercises
-
-See the [setup guide](advanced_regex_exercises_setup.md).
-
-## Exercise 1 - positive look ahead
-
-We'll search for boban's that have an alphabetical letter after them.
-
-We can use `\a` ("alphabetical") to represent a letter. It's a shortened version of `[a-zA-Z]`.
-
-- highlight the below block with linewise highlight then hit `<escape>`
-- put your cursor on the "bobanita"
-- start a magic case insensitive search on the block with `/\v%V\c`
-    - the `\c` relates to the potential bug pointed out last kata with `%V` ignoring `ignorecase`
-- add `boban` (all the terms should light up)
-- add `\a@=` (meaning "must have a letter after it)
-    - `\a` - letter
-    - `@` - look around operator attached to the previous atom `\a`
-    - (no direction specified - defaults to forwards)
-    - `=` - positive
-
-```
-boban          bobanita            mcboban            boban-jones    bobanJo
-ahbobanita     BOBAN               Bobanson           ahboban
-```
-
-The final pattern should be: `/\v%V\cboban\a@=`
-
-It should match the boban's from "bobanita", "ahbobanita", "Bobanson" and "bobanJo".
-
-## Exercise 2 - a negative outlook
-
-Search for lonely boban's with no alphabetical letters before or after.
-
-We'll use a negative lookbehind and negative lookahead.
-
-- highlight the below block with linewise highlight then hit `<escape>`
-- put your cursor on the "boban"
-- start a magic case insensitive search on the block with `/\v%V\c`
-- add `boban` (all the terms should light up)
-- add `\a@!` (meaning "must not have a letter after it)
-    - this should reduce the matches a lot but will still include errors like "mcboban"
-- move your cursor back to just before the 'b' of "boban"
-- add `\a@<!` (meaning "must not have a letter before it)
-
-```
-boban          bobanita            mcboban            boban-jones    bobanJo
-ahbobanita     BOBAN               Bobanson           ahboban
-```
-
-The final pattern should be: `/\v%V\c\a@<!boban\a@!`
-
-There should be 3 matches:
-
-- "boban"
-- "BOBAN"
-- the "boban" from "boban-jones".
-
-## Exercise 3 - Singaporean Boban's
-
-Search for Singaporean ahboban's, but not ahbobanita's.
-
-We'll need a positive look behind for "ah" and a negative look ahead for "ita".
-
-According to Professor Zij, prefixing a name with "ah" is a "diminutive" form.
-Equivalent to "Fred" becoming "Freddy" in English.
-It's used in Singapore and some other nearby Asian areas like Hong Kong.
-
-- highlight the below block with linewise highlight then hit `<escape>`
-- put your cursor on the "ahboban"
-- start a magic case insensitive search on the block with `/\v%V\c`
-- add `boban` (all the terms should light up)
-- add `(ita)@!` (meaning "must not have "ita" following it)
-    - this should knock out "ahbobanita" and "bobanita"
-- move your cursor back to just before the 'b' of "boban"
-- add `(ah)@<=` (meaning "must have "ah" before it)
-
-```
-boban          bobanita            mcboban            boban-jones    bobanJo
-ahbobanita     BOBAN               Bobanson           ahboban
-```
-
-The final pattern should be: `/\v%V\c(ah)@<=boban(ita)@!`
-
-This should match just the boban in "ahboban".
-
-# Boilerplate 
-
-For our examples in this kata we've prefixed our searches with `/\v%V\c` to:
-
-- put it in very magic mode
-- restrict the search to the most recent highlighted area
-- explicitly turn on case insensitivity as `%V` seems to ignore the `ignorecase` setting
-
-When `incsearch` is on, the first few characters you type out can cause match noise and the screen to jump.
-
-For next time you might want to do:
-
-```vim
-:nnoremap / /\v%V\c
-```
-
-That will let you focus more on the unique regex for that exercise too.
 
 # Conclusion
 
