@@ -35,39 +35,6 @@ This isn't a very interesting example as you could have just typed `:set wrap` d
 `execute` will become useful though when we need to mix dynamic and static concepts together to build complex and
 configurable patterns.
 
-# Escaping backslash
-
-Like bash, in vimscript the backslach character is understood to be an escape character for double quoted strings,
-but it's literal in single quoted strings:
-
-```vim
-let i = "\\abc"
-
-" Should print \abc
-echo i
-
-let j = '\\abc'
-
-" Should print \\abc
-echo j
-```
-
-So if we use double quoted strings to build our regexes in the exercises, we'll need to escape the backslashes,
-e.g. very magic would be `"\\v"`.
-This makes very magic mode even more useful for avoiding a lot of backslash noise.
-
-Generally we'll use single quoted strings to avoid this, but if a regex contained a single quote we'll need to change tactics.
-
-Things get more complex as well when you're executing commands within execute that themselves take strings.
-For example executing `echo '\'`. In this case we can change what's being echo'd to use double quotes,
-and use single quotes to wrap the command as a whole:
-
-```vim
-execute 'echo "\\"'
-```
-
-As the logic gets more increasingly nested, escaping can start to get a bit mind bending...
-
 # Exercises
 
 See the [setup guide](advanced_regex_exercises_setup.md).
@@ -131,20 +98,20 @@ For example:
 
 Do `:echo line('.')<enter>` to try it out. See `:help line` for more info.
 
-Put your cursor some from line 140-155 and run:
+Put your cursor somewhere from line 100-115, take note of the line number, then run:
 
 ```vim
 :execute '/LINE:' . line('.')<enter>
 ```
 
 ```
-LINE:140    LINE:144    LINE:148    LINE:152
-LINE:141    LINE:145    LINE:149    LINE:153
-LINE:142    LINE:146    LINE:150    LINE:154
-LINE:143    LINE:147    LINE:151    LINE:155
+LINE:100    LINE:104    LINE:108    LINE:112
+LINE:101    LINE:105    LINE:109    LINE:113
+LINE:102    LINE:106    LINE:110    LINE:114
+LINE:103    LINE:107    LINE:111    LINE:115
 ```
 
-Do `:echo @/` to confirm the last search (will be something like `LINE:141`)
+Do `:echo @/` to confirm the last search (will be something like `LINE:101`)
 
 ## Exercise 4 - incorporating registers
 
@@ -230,7 +197,7 @@ That should match:
 
 - "boban jones"
 - "(Mc)Boban jones"
-- "boban-jonesmouth".
+- "boban-jones(mouth)".
 - "Boban Jones"
 - "BOBAN jones"
 
@@ -246,6 +213,22 @@ Bobanita Smith    Ahboban        Boban         boban jones
 McBoban jones     Biban          Snoban        boban-jonesmouth
 bobanita_jones    BOBAN jones    Boban Jones   Ahboban_smith
 ```
+
+We've built a basic search tool. We can update specific registers and rerun our search command.
+
+For fun let's add a lookahead from the previous kata to match jones's with something after them:
+
+- select the block below as usual
+- do `:let @l = 'jones\a@='<enter>`
+- if you have fzf.vim installed, do `:History:<enter>` and zoom in on the execute command, otherwise use `<c-p>` like before
+
+```
+Bobanita Smith    Ahboban        Boban         boban jones-mouth
+McBoban jones     Biban          Snoban        boban-jonesmouth
+bobanita_jones    BOBAN jones    Boban Jones   Ahboban_smith
+```
+
+Just the "boban-jones(mouth)" should match.
 
 ## Exercise 6 - automating the search
 
@@ -270,7 +253,7 @@ So we start typing `:execute .... @l` and then we need to hit enter to submit th
 
 We're all setup for some fast searching now:
 
-- visually select our comprehensive database of Enxhell's cousins below like usual 
+- visually select our comprehensive database of Enxhell's cousins below like usual then hit escape
 - do `?` (that should bring up similar matches to exercise 5)
 - do `:let @c = '\c'<enter>` then hit `?` to run a new search
 - do `:let @f = 'Bobanita'<enter>` then hit `?`
@@ -296,6 +279,39 @@ nnoremap ? :execute '/\v%V' . @c . @f . '[' . @d . ']' . @l<enter>
 - do `?`
 - do `:let @l = 'smith'<enter>`
 - do `?`
+
+# Escaping backslash
+
+Like bash, in vimscript the backslach character is understood to be an escape character for double quoted strings,
+but it's literal in single quoted strings:
+
+```vim
+let i = "\\abc"
+
+" Should print \abc
+echo i
+
+let j = '\\abc'
+
+" Should print \\abc
+echo j
+```
+
+So if we use double quoted strings to build our regexes in the exercises, we'll need to escape the backslashes,
+e.g. very magic would be `"\\v"`.
+This makes very magic mode even more useful for avoiding a lot of backslash noise.
+
+Generally we'll use single quoted strings to avoid this, but if a regex contained a single quote we'll need to change tactics.
+
+Things get more complex as well when you're executing commands within execute that themselves take strings.
+For example executing `echo '\'`. In this case we can change what's being echo'd to use double quotes,
+and use single quotes to wrap the command as a whole:
+
+```vim
+execute 'echo "\\"'
+```
+
+As the logic gets more increasingly nested, escaping can start to get a bit mind bending...
 
 # Conclusion
 
