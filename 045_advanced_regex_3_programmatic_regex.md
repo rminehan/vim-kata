@@ -2,6 +2,8 @@
 
 In today's kata we're going to programmatically build regex patterns using vimscript.
 
+This is not something you'd do in regular coding, it's more for scripting and building powerful shortcuts.
+
 # Quick vimscript recap
 
 Vimscript is the language your config file is written in and it's the language you use when you enter `:` commands.
@@ -43,7 +45,6 @@ See the [setup guide](advanced_regex_exercises_setup.md).
 
 It turns out that you can run searches from command mode.
 
-- put your cursor on "abc" in the block below
 - do `:/abc<enter>`
 
 ```
@@ -55,7 +56,6 @@ This is just the same as directly running `/abc` from normal mode (except it's n
 
 This means we can use `execute` to run searches (as `execute` always runs from command mode).
 
-- again put your cursor on "abc" in the block above
 - do `:execute '/abc'<enter>`
 - do `:echo @/` to see your last executed search (should be "abc")
 
@@ -157,6 +157,9 @@ Now we'll show using `@:` to rerun the previous ex command:
 
 This should match the usual suspects and also "Biban".
 
+Note that this is quite similar to the `*` operator which searches for the word under the cursor
+with word boundaries. You now have enough tools to build an operator like that yourself.
+
 ## Exercise 5
 
 For this exercise we'll devise a way to search for different first and last name combinations.
@@ -214,9 +217,13 @@ McBoban jones     Biban          Snoban        boban-jonesmouth
 bobanita_jones    BOBAN jones    Boban Jones   Ahboban_smith
 ```
 
+Now that it's case sensitive, we lose some matches.
+
 We've built a basic search tool. We can update specific registers and rerun our search command.
 
-For fun let's add a lookahead from the previous kata to match jones's with something after them:
+## Exercise 6 - lookahead
+
+For fun let's add a lookahead from the previous kata to only match the lastname "jones" if it has a letter after it:
 
 - select the block below as usual
 - do `:let @l = 'jones\a@='<enter>`
@@ -230,9 +237,9 @@ bobanita_jones    BOBAN jones    Boban Jones   Ahboban_smith
 
 Just the "boban-jones(mouth)" should match.
 
-## Exercise 6 - automating the search
+## Exercise 7 (optional) - automating the search
 
-Carrying on from exercise 5, we want to be able to quickly update our search terms then run a new search.
+Suppose we want to be able to quickly update our search terms then run a new search.
 
 Hitting `:` and hammering `<c-p>` is a bit tedious.
 
@@ -245,17 +252,21 @@ nnoremap ? :execute '/\v%V' . @c . @f . '[ _-]' . @l<enter>
 "                           you typed these keys            enter to submit this
 ```
 
-Note the `<enter>` you type there is the actual string `<enter>` (and you'd press enter _after_ it to lock in the command).
-Because it's in carets, vim interprets it to mean the enter key. We could also have put in .
+The mapping above is describing the literal key presses you want when you hit `?`.
+The tricky part is how do you represent hitting enter as part of the inner `execute` command?
+If you press enter, then vim takes that to mean you're finished with the `nnoremap`.
 
-To clarify, we're describing literal key presses for vim to enter when we hit `?`.
-So we start typing `:execute .... @l` and then we need to hit enter to submit the execute command.
+The solution is to write out the literal text `<enter>` or use the literal enter character .
+Hence above you type `<enter>` to represent pressning enter for the `execute` command,
+then you press the actual enter key to finish the `nnoremap` command.
+Layers upon layers!
 
-We're all setup for some fast searching now:
+We're all setup for some fast searching now by just hitting `?`.
+Below we'll keep updating our search terms then rerun `?` each time:
 
 - visually select our comprehensive database of Enxhell's cousins below like usual then hit escape
-- do `?` (that should bring up similar matches to exercise 5)
-- do `:let @c = '\c'<enter>` then hit `?` to run a new search
+- do `:let @l = 'jones'<enter>` then hit `?`
+- do `:let @c = '\c'<enter>` then hit `?`
 - do `:let @f = 'Bobanita'<enter>` then hit `?`
 - do `:let @f = '(mc|ah)@<=boban'<enter>` then hit `?`
 
@@ -266,12 +277,22 @@ bobanita_jones    BOBAN jones    Boban Jones   Ahboban_smith
 Bobanita Bobans   Ahjoban Jones  Boban Smith   Anaboban.smith
 ```
 
-As a list little improvement we'll make the delims configurable too:
+## Exercise 8 (optional) - changing the delims
+
+So far our delims between first and last name have been hard-coded to only allow space, `_` and `-`.
+
+For this exercise we'll make them configurable too by reading them from `@d`
+and wrapping them in a character class `[ ... ]`.
+
+Let's rebind `?` to a modified command:
 
 ```vim
 nnoremap ? :execute '/\v%V' . @c . @f . '[' . @d . ']' . @l<enter>
 ```
 
+(above it's implied you type out all those characters literally then hit enter)
+
+- visually select the below as usual
 - do `:let @d = ' .-_'<enter>` (space, period, hyphen and underscore)
     - note that `.` in a character class means literal '.'
 - do `?` to rerun the search with the updated regex
@@ -280,10 +301,19 @@ nnoremap ? :execute '/\v%V' . @c . @f . '[' . @d . ']' . @l<enter>
 - do `:let @l = 'smith'<enter>`
 - do `?`
 
+```
+Bobanita Smith    Ahboban        Boban         boban jones
+McBoban jones     Biban          Ahboban smith boban-jonesmouth
+bobanita_jones    BOBAN jones    Boban Jones   Ahboban_smith
+Bobanita Bobans   Ahjoban Jones  Boban Smith   Anaboban.smith
+```
+
 # Escaping backslash
 
-Like bash, in vimscript the backslach character is understood to be an escape character for double quoted strings,
-but it's literal in single quoted strings:
+In our exercises we've been using single quotes for our ex commands because it avoids a lot of backslash noise.
+
+Like bash, vimscript supports double quoted and single quoted strings,
+and like bash, they treat backslach characters differently.
 
 ```vim
 let i = "\\abc"
@@ -297,15 +327,17 @@ let j = '\\abc'
 echo j
 ```
 
-So if we use double quoted strings to build our regexes in the exercises, we'll need to escape the backslashes,
-e.g. very magic would be `"\\v"`.
-This makes very magic mode even more useful for avoiding a lot of backslash noise.
+So with single quotes, a backslash is a literal backslash, but with double quotes, it's an escape character.
+This means that it you want a literal backslash with double quotes, you need to escape it: `"\\"`.
 
-Generally we'll use single quoted strings to avoid this, but if a regex contained a single quote we'll need to change tactics.
+Because our regexes contain a lot of backslashes already (e.g. `\v`, `\d`, `\w`, `\a`, `\S`),
+it makes much more sense to use single quoted strings to avoid noisy double backslashes.
 
-Things get more complex as well when you're executing commands within execute that themselves take strings.
-For example executing `echo '\'`. In this case we can change what's being echo'd to use double quotes,
-and use single quotes to wrap the command as a whole:
+But! If a regex contained a literal single quote we might need to use double quotes.
+
+Things get more complex when you're executing commands within commands.
+For example executing `echo '\'` as part of an `execute` command.
+Here we'd need to use both types of quotes:
 
 ```vim
 execute 'echo "\\"'
@@ -318,7 +350,8 @@ As the logic gets more increasingly nested, escaping can start to get a bit mind
 We can use the `execute` command to compose regexes on the fly programmatically from editor state
 like registers and vimscript functions.
 
-This lets us build more powerful plugins and scripts.
+Realistically this isn't something you'd do in your day to day editing,
+but it would allow you to start writing powerful search plugins or shortcuts.
 
 # Further reading
 
