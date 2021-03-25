@@ -11,34 +11,6 @@ For example in python: `MyClass`, `boban673`, `THE_MIGHTY_BOBAN`.
 Keywords usually follow stricter rules than identifiers, for example they might be purely lowercase letters,
 whereas identifiers usually can be uppercase, have digits and also underscores.
 
-What constitutes a keyword or identifier depends on the settings in your current buffer.
-You can view them by doing:
-
-```vim
-set iskeyword?
-" For me, it prints
-" iskeyword=@,48-57,_,192-255
-
-set isident?
-" For me, it prints
-" isident=@,48-57,_,192-255
-```
-
-The format vim prints these results in is explained in detail in the appendix at the end of this kata.
-A quick summary of the above is that it's a comma separated list of allowed character groups:
-
-- `@` - ascii letters (English letters and some European letters like à)
-- `48-57` - characters 48-57 (which corresponds to the letters 0-9)
-- `_` - underscore
-- `192-255` - characters 192-255 (which corresponds to some oddball extended ascii characters like ╬)
-
-So `abc123_╬` would be considered a keyword and identifier under these settings.
-
-In my case the settings are identical,
-potentially because I'm in a markdown file which doesn't distinguish between keywords and identifiers.
-The values were probably set by the markdown plugin I'm using.
-If you ran this in a python or scala file you'd hopefully get something different.
-
 # How does this relate to regexes?
 
 Vim provides `\k` and `\i` for matching keywords and identifiers respectively.
@@ -48,37 +20,17 @@ Note as well there are `\K` and `\I` which are the same as their lowercase breth
 This is handy for a lot of languages which don't allow digits as the first character for keywords or identifiers.
 For example a keyword would be `\K\k*`.
 
+For example in python, "boban2" is an okay identifier, but "2boban" wouldn't be.
+
 If you're writing plugins, custom commands or defining syntax highlighting rules, then these atoms are very handy.
-
-# Files
-
-Vim also has a concept of filenames and the characters that are allowed in a path.
-
-It's controlled by the `isfname` setting:
-
-```vim
-set isfname?
-
-" On my system:
-" isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=
-```
-
-There's corresponding regex atoms `\f` and `\F` like above.
-
-## Using `isfname`
-
-Vim uses `isfname` internally for file related operations.
-
-For example when your cursor is on a file path, pressing `gf` causes vim to try and open that file in a buffer.
-
-It will use `isfname` to determine how to walk left and right from your cursor to build out the text area
-corresponding to the path.
 
 # Exercises
 
 See the [setup guide](advanced_regex_exercises_setup.md).
 
-Further, to put us all on the same page, we'll explicitly set what characters constitute keywords, identifiers and paths:
+Further, to put us all on the same page, we'll explicitly set what characters constitute keywords, identifiers and paths.
+
+(Detailed explanation of these settings is in the appendix)
 
 ```vim
 " Set keywords to be just English alphabetical characters or underscore or asterix
@@ -86,9 +38,6 @@ set iskeyword=a-z,A-Z,_,*
 
 " Set identifiers to be ascii letters (that permits German, Italian etc... letters), or digits or underscore
 set isident=@,48-57,_
-
-" Set filename characters to ascii letters, digits and a bunch of misc path characters
-set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=
 ```
 
 Copying that out by hand will be a bit tedious. A shortcut would be to put your cursor on the the setting name above
@@ -98,8 +47,17 @@ Remember `<c-r><c-a>` inserts the big word under the cursor.
 Another way would be to just yank the line with `Y` then do `:<c-r>"<enter>`.
 Remember `<c-r>[REGISTER]` copies text from the register.
 
-Note in the above we included `*` as a keyword.
-That's just to have a character that's a keyword but _isn't_ an identifier to make the examples more interesting.
+Conceptually our keyword and identifier chars form a venn diagram like:
+
+```
+Keyword only             Keyword and           Identifier only
+                          Identifier
+
+   *                       a-z A-Z _            European characters
+```
+
+Note in the above we included `*` as a keyword char which is unusual as usually all keyword chars are identifiers.
+That's just to make the "Keyword only" section non-empty so that the exercises are more interesting.
 
 ## Exercise 1 - identifiers and keywords
 
@@ -108,7 +66,7 @@ Below we'll search for keywords and identifiers using patterns `\K\k*` and `\I\i
 As usual we'll limit the search to a block using `%V`.
 
 - visually select the text between the `---` dividers then hit escape
-- search `/\v%V\K\k*` (all the words from columns 1 and 3 should fully highlight)
+- search `/\v%V\K\k*` (all the words from columns 1 and 2 should fully highlight)
 - search `/\v%V\I\i*` (all the words from columns 1 and 3 should fully highlight)
 
 ```
@@ -163,6 +121,8 @@ and do: `Y:<c-r>"<enter>`
 nnoremap ? :execute '/\v%V(^\|\s)@<=' . @p . '($\|\s)@='<enter>
 ```
 
+(remember above you're typing out a literal `<enter>` then hitting enter to finish the `nnoremap` command)
+
 Note that we had to escape the pipes above.
 This is because they are separators in vimscript, analogous to semicolons in java or C.
 
@@ -187,9 +147,17 @@ for
 
 You could load other patterns into the `p` register and run other searches.
 
-## Exercise 3 - filenames
+## Exercise 3 (optional) - filenames
 
-For completeness we'll test out the `\f` and `\F` atoms for matching filename characters.
+Vim also has a concept of a "filename path character" defined by `\f` and `\F`.
+
+Their behavior is controlled by `isfname`. Run this to setup our definition:
+
+```vim
+set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=
+```
+
+Like above, you can yank the whole line, then do `:<c-r>"<enter>`.
 
 We'll use the same `?` trick from exercise 2, but load `\F\f*` into register `p`.
 
@@ -215,16 +183,42 @@ All the kata in this repo are proof of that!
 So usually you'd just be searching for `\f+`.
 We were just playing around with `\F` to check that it would make `0.md` as not being a file.
 
-# Appendix - understanding the characters sets
+# Conclusion
 
-When we do `:set iskeyword?` we get a comma separated list like:
+If you're defining syntax highlighting rules for kewords and identifiers then this section will be useful.
 
+Having a very basic understanding of `\k`, `\i` and `\f` is useful as they affect the behavior of some built
+in vim concepts like word boundaries and `gf` (see appendix).
+
+For general editing though, it's unlikely you'd use these.
+
+# Appendix 1 - format for these settings
+
+What constitutes a keyword or identifier differs between languages.
+
+You can view them by doing:
+
+```vim
+set iskeyword?
+" On a fresh file, for me it prints
+" iskeyword=@,48-57,_,192-255
+
+set isident?
+" On a fresh file, for me it prints
+" isident=@,48-57,_,192-255
 ```
-@,48-57,_,192-255
-```
 
-The full explanation for this format is provided in `:help isfname` (scroll down a bit).
+The format used above to describe groups of characters is a quirk vim format.
+A quick summary of the above is that it's a comma separated list of allowed character groups:
 
+- `@` - ascii letters (English letters and some European letters like à)
+- `48-57` - characters 48-57 (which corresponds to the letters 0-9)
+- `_` - underscore
+- `192-255` - characters 192-255 (which corresponds to some oddball extended ascii characters like ╬)
+
+So `abc123_╬` would be considered a keyword and identifier under these settings.
+
+The full explanation for this format is provided in `:help isfname`.
 Scroll down to this part:
 
 > The format of this option is a list of parts, separated with commas.
@@ -246,10 +240,23 @@ set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=
 "                            ^^^
 ```
 
-# Conclusion
+# Appendix 2 - other uses of `isfname`
 
-If you're defining syntax highlighting rules for kewords and identifiers then this section will be useful.
+Vim uses `isfname` internally for file related operations.
 
-For general editing, you're probably not going to be searching for vague identifier characters when you
-have a specific word you're after.
-For example you'd search `for` not `\k{3}`.
+For example when your cursor is on a file path, pressing `gf` causes vim to try and open that file in a buffer.
+
+It will use `isfname` to determine how to walk left and right from your cursor to build out the text area
+corresponding to the path.
+
+For example:
+
+- do `set isfname=a-z,A-Z,/,.` (letters, forward slash and `.`)
+- put your cursor between the `&` below
+- do `gf` (it should open the `README.md`)
+
+```
+&&README.md&&
+```
+
+The important point is that it knows not to include the `&`'s as part of the path.
