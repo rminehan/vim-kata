@@ -89,7 +89,7 @@ It should only match the "Boban" your cursor is on.
 
 If you move your cursor to the start of another "Boban" and hit `n` that should show that the new "Boban" is now the match.
 
-If you move your cursor of the start of the word and hit `n` you should see it telling you there's no matches.
+If you move your cursor off the start of the word and hit `n` you should see it telling you there's no matches.
 
 # Exercises
 
