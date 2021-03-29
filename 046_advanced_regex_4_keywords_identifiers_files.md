@@ -14,7 +14,7 @@ whereas identifiers usually can be uppercase, have digits and also underscores.
 # How does this relate to regexes?
 
 Vim provides `\k` and `\i` for matching keywords and identifiers respectively.
-Their behavior is defined by `iskeyword` and `isident` above.
+Their behavior is defined by `iskeyword` and `isident`.
 
 Note as well there are `\K` and `\I` which are the same as their lowercase brethren, but they exclude digits.
 This is handy for a lot of languages which don't allow digits as the first character for keywords or identifiers.
@@ -52,7 +52,7 @@ Conceptually our keyword and identifier chars form a venn diagram like:
 ```
 Keyword only             Keyword and           Identifier only
                           Identifier
-
+                                                Digits
    *                       a-z A-Z _            European characters
 ```
 
