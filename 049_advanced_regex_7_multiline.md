@@ -58,101 +58,6 @@ For example:
 - `\_.` matches all characters (including newline)
 - `\_s` matches all whitespace (including newline)
 
-## Unexpected variants
-
-There's even newline based variants that you wouldn't usually associate with whitespace.
-
-For example:
-
-- `\_d` - matches digits and newline
-- `\_a` - matches letters and newline
-
-Even `\S` (not whitespace) has a newline analog: `\_S` (not whitespace and newline)!
-
-These variants would be useful for matching chunks that have been broken across lines.
-
-For example `\_d+` would be useful for something like the below if it's supposed to be interpreted as one number.
-
-```
-0123
-4567
-890
-```
-
-Just remember that there's still newlines in your match, you won't be able to immediately parse it to an integer.
-
-## The full list
-
-To see the full list, run `:help /\_` and you'll get something like:
-
-```
-         /\_ E63 /\_i /\_I /\_k /\_K /\_f /\_F
-         /\_p /\_P /\_s /\_S /\_d /\_D /\_x /\_X
-         /\_o /\_O /\_w /\_W /\_h /\_H /\_a /\_A
-         /\_l /\_L /\_u /\_U
-\_x   Where "x" is any of the characters above: The character class with end-of-line added
-```
-
-## Always backslach
-
-Even in very magic mode, you need the backslash, e.g. you can't do `_s` for "any whitespace or newline" - you need `\_s`
-
-This applies to `\_.` too.
-
-This rule makes sense as underscore is a common literal character.
-
-# Beware the ravenous underscore dot
-
-The atom `\_.` is a ravenous beast devouring all characters.
-
-If you put a greedy quantifier like `+` or `*` on it, it becomes unstoppable and will consume your entire buffer
-as it's no longer stopped by newlines.
-
-Even `%` operators like `%V` won't stop it once it's started, as they only apply at the point they're scanned.
-
-To make the point, set up a search with the block below and do `/\v%V\_.*` and you'll see it leaves the
-search area and runs to the end of the buffer. This is because `%V` is only validating that a match _starts_ in the
-highlighted area. See also the section on prison breaking in [this article](dangers_of_visual_mode.md).
-
-Putting another `%V` at the end will "fix" this in the sense that only characters in the block will get highlighted.
-However the regex engine still would have run to the end of the buffer and then backtracked character by character until
-finally coming back into the search area. Depending on what you're doing this could be a big performance issue.
-
-```
-abc
-def
-ghi
-```
-
-# Don't forget newline itself
-
-You can also just search explicitly for `\n` if you want to match the newline.
-
-e.g. `/o\nb` will match below:
-
-```
-bo
-ban
-```
-
-# Start and end of buffer
-
-Recall from [kata 43](043_advanced_regex_1_restricting_search_space.md) we introduced `%` based atoms (like `%V`)
-which were "context" or "buffer" oriented.
-
-For example:
-
-- `%V` means in the most recent visual selection
-- `%45l` means on line 45
-- `%20c` means in column 20
-
-Today we're introducing more buffer related atoms:
-
-- `%^` - start of buffer
-- `%$` - end of buffer
-
-These will be useful later for our whitespace cleaning.
-
 # Exercises
 
 See the [setup guide](advanced_regex_exercises_setup.md).
@@ -412,9 +317,15 @@ So the second substitution just looks at line 1 and deletes a newline if it's th
 
 ## Exercise 5 (optional)
 
-Suppose we wanted to only remove blank lines at the end of a file.
+Recall from [kata 43](043_advanced_regex_1_restricting_search_space.md) we introduced `%` based atoms (like `%V`)
+which were "context" or "buffer" oriented, e.g. `%V` means in the most recent visual selection.
 
-This is a good chance to use `%$`.
+For this exercise we're introducing more buffer related atoms:
+
+- `%^` - start of buffer
+- `%$` - end of buffer
+
+We can use this to only remove blank lines at the end of a file:
 
 - do `:new<enter>`
 - fill it with random text and some trailing blank lines
@@ -429,7 +340,7 @@ Notice how `%$` still protects a newline. This is good for making sure files hav
 
 Multiline regexes have their uses (mainly in scripts) but because they're lesser known there are some gotchas with them.
 
-For example beware of consuming your entire buffer using `\_.` with a greedy quantifier.
+For example beware of consuming your entire buffer using `\_.` with a greedy quantifier (see appendix).
 
 There are also some subtle bugs related to visual mode (see [related article](dangers_of_visual_mode.md)).
 
@@ -437,3 +348,82 @@ They can also be confusing because we're used to line based thinking,
 so if there's a simple line based way to do something,
 consider using that approach instead if you're planning on sharing it around,
 or even just for your future self reading your script later on.
+
+# Appendix 1 - More newline variants
+
+Many atoms come with underscore newline variants.
+There's even newline based variants that you wouldn't usually associate with whitespace.
+
+For example:
+
+- `\_d` - matches digits and newline
+- `\_a` - matches letters and newline
+
+Even `\S` (not whitespace) has a newline analog: `\_S` (not whitespace and newline)!
+
+These variants would be useful for matching chunks that have been broken across lines.
+
+For example `\_d+` would be useful for something like the below if it's supposed to be interpreted as one number.
+
+```
+0123
+4567
+890
+```
+
+Just remember that there's still newlines in your match, you won't be able to immediately parse it to an integer.
+
+## The full list
+
+To see the full list, run `:help /\_` and you'll get something like:
+
+```
+         /\_ E63 /\_i /\_I /\_k /\_K /\_f /\_F
+         /\_p /\_P /\_s /\_S /\_d /\_D /\_x /\_X
+         /\_o /\_O /\_w /\_W /\_h /\_H /\_a /\_A
+         /\_l /\_L /\_u /\_U
+\_x   Where "x" is any of the characters above: The character class with end-of-line added
+```
+
+## Always backslash
+
+Even in very magic mode, you need the backslash, e.g. you can't do `_s` for "any whitespace or newline" - you need `\_s`
+
+This applies to `\_.` too.
+
+This rule makes sense as underscore is a common literal character.
+
+# Appendix 2 - Beware the ravenous underscore dot
+
+The atom `\_.` is a ravenous beast devouring all characters.
+
+If you put a greedy quantifier like `+` or `*` on it, it becomes unstoppable and will consume your entire buffer
+as it's no longer stopped by newlines.
+
+Even `%` operators like `%V` won't stop it once it's started, as they only apply at the point they're scanned.
+
+To make the point, set up a search with the block below and do `/\v%V\_.*` and you'll see it leaves the
+search area and runs to the end of the buffer. This is because `%V` is only validating that a match _starts_ in the
+highlighted area. See also the section on prison breaking in [this article](dangers_of_visual_mode.md).
+
+Putting another `%V` at the end will "fix" this in the sense that only characters in the block will get highlighted.
+However the regex engine still would have run to the end of the buffer and then backtracked character by character until
+finally coming back into the search area. Depending on what you're doing this could be a big performance issue.
+
+```
+abc
+def
+ghi
+```
+
+# Appendix 3 - Don't forget newline itself
+
+You can also just search explicitly for `\n` if you want to match the newline.
+
+e.g. `/o\nb` will match below:
+
+```
+bo
+ban
+```
+
