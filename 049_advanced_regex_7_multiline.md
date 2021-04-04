@@ -85,9 +85,14 @@ below
 
 ```
 
-Some notes:
+The core of the pattern is `\s*$\_s*`:
 
-The `$` is necessary to make sure we're only finding matches that start at the end of lines.
+- `\s*$` - trailing whitespace
+- `\_s*` - the newline character and then any leading whitespace on the next line(s)
+
+### Some notes for the curious (skip during kata):
+
+The `$` is necessary to make sure we're only finding trailing whitespace (not spaces within a line).
 Without it we'd be also finding the whitespace before "Join" and any multi-space blocks between words on the same line. 
 
 Having the `$` in the pattern syntactically breaks the whitespace up into two groups - those before it and those after.
@@ -130,8 +135,8 @@ so you'll want to undo after the substitute.
 
 - put your cursor somewhere in the first paragraph
 - do `Vipjj`
-- do `:s/\v\s*$\_s*/ /<enter>`
-- do `u` to restore the block
+- do `:s/\v\s*$\_s*/ /` (without enter)
+- if you have `inccommand` setup, you can already see how the backticks ride up, otherwise hit enter then `u`
 
 ```
 
@@ -198,7 +203,7 @@ Remember `<c-r>` followed by a register inserts from that register.
 In our case the `/` register is our last search.
 So this was just a show-off way to put the last search into our substitute.
 
-We're replacing all matches of our pattern with `r<newline>`.
+We're replacing all matches of our pattern with `x<newline>`.
 The newline is to stop the tildas riding up on to the previous line as the match includes all the newlines in the block.
 
 You'll see just one `x` appear meaning that `substitute` found just one match.
@@ -220,7 +225,7 @@ Note that `gn` introduced in [kata 38](038_search_text_object.md) seems to work 
 Note that this might just be a bug in neovim that gets fixed at a later point.
 My version is 0.4.4.
 
-## Exercise 4 - better whitespace cleaning
+## (Optional) Exercise 4 - better whitespace cleaning
 
 In [kata 40](040_scripts.md) exercise 2 we introduced a simple vimscript to clean up whitespace in the current buffer:
 
@@ -426,4 +431,3 @@ e.g. `/o\nb` will match below:
 bo
 ban
 ```
-
