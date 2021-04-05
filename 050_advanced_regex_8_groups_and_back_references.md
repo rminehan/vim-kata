@@ -48,10 +48,227 @@ Those numbers can be used in "back references" to refer to that matched text lat
 
 The replacement string here is formed by using back references to the match.
 
+# Exercises
+
+See the [setup guide](advanced_regex_exercises_setup.md).
+
+## Exercise 1 - simple palindromes
+
+Find the length 4 or 5 digit palindromes in the area below.
+
+(A palindrome is a string that's the same forwards or backwards, e.g "0123210")
+
+To achieve this, we can put back references into the search itself (see appendix).
+
+We'll start by just trying to match length 4 palindromes, then tweak our regex to match length 5 ones too.
+
+- prepare the search area as usual
+- do `/\v%V` as usual
+- in between the carets, put `(\d)(\d)`
+    - now we have two groups: 1 and 2 each capturing a digit
+- after the above add `\2\1`
+    - now it should match length 4 palindromes only
+- after the second `(\d)`, add in `\d?` meaning "optional digit"
+    - now it should match all the length 4 and 5 palindromes
+- wrap word boundaries `<>` around the core of the match (to stop us matching subsections of length 6+ palindromes)
+
+```
+  SHOULD MATCH           SHOULDN'T MATCH
+     0110                      0
+     0000                     121
+    12921                     1222
+    99899                    876 78
+     1221                     12320
+                             123321
+                            12344321
+                               33
+                             abba
+                             abcba
+```
+
+The final pattern is `\v%V<(\d)(\d)\d?\2\1>`.
+
+It makes sure that the first and last digit matched are the same by putting `\1` at the end.
+
+It makes sure that the second and second last digit matched are the same by putting `\2` second from the end.
+
+It allows for an optional middle digit.
+When that matches something you have a length 5 palindrome, otherwise you have a length 4 palindrome.
+
+Matching palindromes of any length can be achieved by regex engines that support recursion
+(which technically is no longer "regular" expressions in the strict sense).
+Vim's regex engine doesn't support recursion but there are other engines that do, like perl's.
+
+## Exercise 2 - capitalization
+
+Change each duplicate name below to have a capitalized first letter.
+
+We'll define a name as something with at least 4 letters and word boundaries.
+That should stop words like "the" getting matched.
+
+We'll search the text below for names that occur twice using a back reference.
+We'll put the zoom operators `\zs` and `\ze` around the second occurence and then
+use a spiffy trick `\u` to capitalize the first letter in the replace text.
+See `:help sub-replace-special`.
+
+- prepare the search area as usual
+- do `\v%V`
+- add `(\a{4,})` (this captures 4+ letter words into group 1)
+- put word boundaries (`<` and `>`) around the above
+- add `.{-}` to the end of the match
+    - this lazily matches to the end of the line currently
+- add `\1` (this looks for repetitions of the earlier name)
+    - so far it will only match Marianna's sentence as the case is the same (due to `%V` disabling case insensitivity)
+- put `\c` after `%V`
+- put word boundaries around `\1` to remove some imposter matches
+- hit enter to lock that in
+
+```
+   CREWMATES                        IMPOSTERS
+   boban the boban                  enxhell the enxhellic
+   the bobanita and the bobanita    R2D2 and the other one r2d2
+   Lola and her friend lola         bola and her friend Ebola
+   Marianna who is Marianna         Jo the jo
+                                    angelina7 of planet angelina
+```
+
+At this point your search should be `\v%V\c<(\a{4,})>.{-}<\1>`
+
+Now we'll substitute:
+
+- do `:'<,'>s/` to start a substitute on the last visual selection (you'll have to type in the range manually)
+- do `<c-r>/` to insert in the last search term
+- put `\zs` and `\ze` around `\1` to limit the match to just it
+- append `/` to begin replacing
+- do `\u\1` which means "group 1 with the first character uppercased"
+- add `/g` in case there's multiple matches per line
+- lock it in with enter
+
+The transformation should have been:
+
+```
+   boban the Boban                               boban the boban
+   the bobanita and the Bobanita        ---->    the bobanita and the bobanita
+   Lola and her friend Lola                      Lola and her friend lola
+   Marianna who is Marianna                      Marianna who is Marianna
+```
+
+Optionally hit `u` to undo and try other case variants in place of `\u` like:
+
+- `\l` to lowercase the next character (e.g. "Marianna who is marianna")
+- `\U` to uppercase all subsequent characters until hitting an `\E`
+- `\L` to lowercase all subsequent characters until hitting an `\E`
+
+One thing that might be confusing you is how we used `\u` in one of the warm up exercises to mean "upper case letter",
+but here it means "upper case the next letter".
+In the former example, `\u` was appearing in the search, not the replacement.
+See `:help /\u` for the search version and `:help s/\u` for the replacement version.
+
+## Exercise 3
+
+Completely uppercase all the Bobany words below where a Bobany word is defined as one of:
+
+- Bob
+- Boba
+- Boban
+- Bobany
+
+(ignoring case)
+
+The above list is like saying:
+
+> It must be a substring of "Bobany" from position 0, but it needs to be at least length 3
+
+The length 3 condition rules out "", "B", and "Bo".
+
+Another way to express it is:
+
+> You can be lazy and omit trailing letters of "Bobany", as long as at least 3 are left
+
+To match this we _could_ do something like `(Bob|Boba|Boban|Bobany)`.
+The duplication isn't nice though and it would be easy for a typo to sneak in.
+
+We could at least extract out the "Bob" prefix: `Bob(|a|an|any)`,
+ie. match "Bob" and then either: the empty string, "a", "an" or "any".
+
+Be careful of order too. A `(..|..|..)` will short circuit out on the first match it gets.
+So if the text were "Boban", it would just match the "Bob" because the empty string case would win out.
+So we'd need to reverse the order - longest to shortest.
+
+As a general strategy though this won't work well for longer strings.
+For example "Bobanity" strings ranging from "Bo" to "Bobanity".
+
+Thankfully vim has a thing for this called a "sequence" (`:help /\%[`).
+You give it a sequence of characters and it will match as far as it can into that sequence.
+
+The syntax in very magic mode is `%[...]` and in magic mode down it's `\%[...]`.
+
+For example `%[abc]` will match "a", "ab" and "abc".
+
+- prepare the search as usual
+- do `/\v%V`
+- add `bob` to require matching at least 3 letters
+- add a `\c` after `%V` to make it case insensitive
+- add a sequence `%[any]` after `bob`
+- put word boundaries around `bob%[any]`
+- lock in the search with enter
+
+```
+  CREWMATES         IMPOSTERS
+  Boban             Bobby
+  bob               Bo
+  boBa              Yaboban
+  bobanY            B
+```
+
+The final pattern should be: `\v%V\c<bob%[any]>`
+
+Now to substitute.
+
+The task is to completely uppercase the matches,
+which we can do by putting with `\U` before a back reference in our replacement.
+
+- do `:'<,'>s/` to start a substitution
+- do `<c-r>/` to insert what's in the `/` register (the last search)
+- do `/` to start replacing
+- put in `\0` (referring to the entire match)
+- put `\U` just before it (to uppercase it)
+- hit enter
+
+All the crewmates above should have gotten completely uppercased.
+The imposters won't have because we are only replacing one match per line.
+
+For extra points, hit `u` to undo and run the substitution again using `\U&` instead of `\U\0`.
+The appendix explains that `\0` and `&` represents the entire match.
+
+Hopefully you can see how sequences would be useful in some situations.
+Vim itself is very "sequency" in how ex commands can be entered.
+
+For example all of the following ex commands quit: `q`, `qu`, `qui`, `quit`.
+You could imagine vim using a regex like `\vq%[uit]` to check them.
+Note `q` isn't in the sequence, otherwise the empty string would match.
+
+Another example is `:only` to close all splits but the current.
+You can do `on`, `onl` and `only` which is like `\von%[ly]`.
+
+# Summary
+
+Groups and back references open up the possibility of more powerful searches
+where there is an internal relationship between:
+
+- sections of text in your matches
+- the match and the replacement
+
+Vim also has powerful special casing tricks you can do with replacement strings (`:help sub-replace-expression`).
+
+As an extra bonus we learnt about sequences which are good for substring based matching.
+
+# Appendix
+
 ## Magicness
 
 In magic mode and down, brackets need to be escaped.
-The equivalent magic version of the above would be:
+The equivalent magic version of our opening example would be:
 
 ```vim
 '<,'>s/\(\a*\)-\(\a*\)/\2-\1/
@@ -219,8 +436,9 @@ If we mark one of them as non-capturing though, we just fit under the limit:
 Back references can also be used in searches (not just the replace part).
 
 This is very useful when you want to relate one part of a match to another.
+For example we used heavily in the exercises for palindromes and matching duplicate words on a line.
 
-For example suppose we want to find duplicated names like "BobanBoban" and replace them with just their single name.
+Suppose we want to find duplicated names like "BobanBoban" and replace them with just their single name.
 So far none of the advanced regex tools we've seen would be able to do this well.
 
 A pattern like `/\v(\a+)\1` means: "one or more letters followed by those same characters just matched"
@@ -256,218 +474,11 @@ the duplicate.
 ```
 BobanBoban said to BobanitaBobanita,
 have you seen cousin EnxhellEnxhell?
+```
 
 replaces to:
 
+```
 Boban said to Bobanita,
 have you seen cousin Enxhell?
 ```
-
-# Exercises
-
-See the [setup guide](advanced_regex_exercises_setup.md).
-
-## Exercise 1 - simple palindromes
-
-Find the length 4 or 5 digit palindromes in the area below.
-
-(A palindrome is a string that's the same forwards or backwards, e.g "0123210")
-
-We'll start by just trying to match length 4 palindromes, then tweak our regex to match length 5 ones too.
-
-- do `/\v%V` as usual
-- add `<>` to match word boundaries (to stop us matching subsections of length 6+ palindromes)
-- in between the carets, put `(\d)(\d)`
-    - now we have two groups: 1 and 2 each capturing a digit
-- after the above add `\2\1`
-    - now it should match length 4 palindromes only
-- after the second `(\d)`, add in `\d?` meaning "optional digit"
-    - now it should match all the length 4 and 5 palindromes
-
-```
-  SHOULD MATCH           SHOULDN'T MATCH
-     0110                      0
-     0000                     121
-    12921                     1222
-    99899                    876 78
-     1221                     12320 
-                             123321
-                            12344321
-                               33
-                             abba
-                             abcba
-```
-
-The final pattern is `\v%V<(\d)(\d)\d?\2\1>`.
-
-It makes sure that the first and last digit matched are the same by putting `\1` at the end.
-
-It makes sure that the second and second last digit matched are the same by putting `\2` second from the end.
-
-It allows for an optional middle digit.
-When that matches something you have a length 5 palindrome, otherwise you have a length 4 palindrome.
-
-Matching palindromes of any length can be achieved by regex engines that support recursion
-(which technically is no longer "regular" expressions in the strict sense).
-Vim's regex engine doesn't support recursion but there are other engines that do, like perl's.
-
-## Exercise 2 - capitalization
-
-Change each duplicate name below to have a capitalized first letter.
-
-We'll define a name as something with at least 4 letters and word boundaries.
-That should stop words like "the" getting matched.
-
-We'll search the text below for names that occur twice using a back reference.
-We'll put the zoom operators `\zs` and `\ze` around the second occurence and then
-use a spiffy trick `\u` to capitalize the first letter in the replace text.
-See `:help sub-replace-special`.
-
-- do `\v%V` as usual
-- add `(\a{4,})` (this captures 4+ letter words into group 1)
-- put word boundaries (`<` and `>`) around the above
-- add `.{-}` to the end of the match
-    - this lazily matches to the end of the line currently
-- add `\1` (this looks for repetitions of the earlier name)
-    - so far it will only match Marianna's sentence as the case is the same (due to `%V` disabling case insensitivity)
-- put `\c` after `%V`
-- put word boundaries around `\1` to remove some imposter matches
-- hit enter to lock that in
-
-```
-   CREWMATES                        IMPOSTERS
-   boban the boban                  enxhell the enxhellic
-   the bobanita and the bobanita    R2D2 and the other one r2d2
-   Lola and her friend lola         bola and her friend Ebola
-   Marianna who is Marianna         Jo the jo
-                                    angelina7 of planet angelina
-```
-
-At this point your search should be `\v%V\c<(\a{4,})>.{-}<\1>`
-
-Now we'll substitute:
-
-- do `:'<,'>s/` to start a substitute on the last visual selection (you'll have to type in the range manually)
-- do `<c-r>/` to insert in the last search term
-- put `\zs` and `\ze` around `\1` to limit the match to just it
-- append `/` to begin replacing
-- do `\u\1` which means "group 1 with the first character uppercased"
-- add `/g` in case there's multiple matches per line
-- lock it in with enter
-
-The transformation should have been:
-
-```
-   boban the Boban                               boban the boban
-   the bobanita and the Bobanita        ---->    the bobanita and the bobanita
-   Lola and her friend Lola                      Lola and her friend lola
-   Marianna who is Marianna                      Marianna who is Marianna
-```
-
-Optionally hit `u` to undo and try other case variants in place of `\u` like:
-
-- `\l` to lowercase the next character (e.g. "Marianna who is marianna")
-- `\U` to uppercase all subsequent characters until hitting an `\E`
-- `\L` to lowercase all subsequent characters until hitting an `\E`
-
-One thing that might be confusing you is how we used `\u` in one of the warm up exercises to mean "upper case letter",
-but here it means "upper case the next letter".
-In the former example, `\u` was appearing in the search, not the replacement.
-See `:help /\u` for the search version and `:help s/\u` for the replacement version.
-
-## Exercise 3
-
-Completely uppercase all the Bobany words below where a Bobany word is defined as one of:
-
-- Bob
-- Boba
-- Boban
-- Bobany
-
-(ignoring case)
-
-The above list is like saying:
-
-> It must be a substring of "Bobany" from position 0, but it needs to be at least length 3
-
-The length 3 condition rules out "", "B", and "Bo".
-
-Another way to express it is:
-
-> You can be lazy and omit trailing letters of "Bobany", as long as at least 3 are left
-
-To match this we _could_ do something like `(Bob|Boba|Boban|Bobany)`.
-The duplication isn't nice though and it would be easy for a typo to sneak in.
-
-We could at least extract out the "Bob" prefix: `Bob(|a|an|any)`,
-ie. match "Bob" and then either: the empty string, "a", "an" or "any".
-
-Be careful of order too. A `(..|..|..)` will short circuit out on the first match it gets.
-So if the text were "Boban", it would just match the "Bob" because the empty string case would win out.
-So we'd need to reverse the order - longest to shortest.
-
-As a general strategy though this won't work well for longer strings.
-For example "Bobanity" strings ranging from "Bo" to "Bobanity".
-
-Thankfully vim has a thing for this called a "sequence" (`:help /\%[`).
-You give it a sequence of characters and it will match as far as it can into that sequence.
-
-The syntax in very magic mode is `%[...]` and in magic mode down it's `\%[...]`.
-
-For example `%[abc]` will match "a", "ab" and "abc".
-
-- do `/\v%V` as usual
-- add `bob` to require matching at least 3 letters
-- add a `\c` after `%V` to make it case insensitive
-- add a sequence `%[any]` after `bob`
-- put word boundaries around `bob%[any]`
-- lock in the search with enter
-
-```
-  CREWMATES         IMPOSTERS
-  Boban             Bobby
-  bob               Bo
-  boBa              Yaboban
-  bobanY            B
-```
-
-The final pattern should be: `\v%V\c<bob%[any]>`
-
-Now to substitute.
-
-The task is to completely uppercase the matches,
-which we can do by putting with `\U` before a back reference in our replacement.
-
-- do `:'<,'>s/` to start a substitution
-- do `<c-r>/` to insert what's in the `/` register (the last search)
-- do `/` to start replacing
-- put in `\0` (referring to the entire match)
-- put `\U` just before it (to uppercase it)
-- hit enter
-
-All the crewmates above should have gotten completely uppercased.
-
-For extra points, hit `u` to undo and run the substitution again using `\U&` instead of `\U\0`.
-Recall from above that `&` also represents the entire match.
-
-Hopefully you can see how sequences would be useful in some situations.
-Vim itself is very "sequency" in how ex commands can be entered.
-
-For example all of the following ex commands quit: `q`, `qu`, `qui`, `quit`.
-You could imagine vim using a regex like `\vq%[uit]` to check them.
-Note `q` isn't in the sequence, otherwise the empty string would match.
-
-Another example is `:only` to close all splits but the current.
-You can do `on`, `onl` and `only` which is like `\von%[ly]`.
-
-# Summary
-
-Groups and back references open up the possibility of more powerful searches
-where there is an internal relationship between:
-
-- sections of text in your matches
-- the match and the replacement
-
-Vim also has powerful special casing tricks you can do with replacement strings (`:help sub-replace-expression`).
-
-As an extra bonus we learnt about sequences which are good for substring based matching.
