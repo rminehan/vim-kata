@@ -24,8 +24,8 @@ You can run it again to reverse the effect as it's self-inverting.
 ```
 
 ```
-Jones-Boban              TheGerman-Thilo
-Luzsomething-Enxhell     Bobanita-Hayworth
+Boban-Jones              TheGerman-Thilo
+Enxhell-Luzsomething     Bobanita-Hayworth
 ```
 
 Let's break this down:
@@ -125,8 +125,8 @@ See `:help sub-replace-special`.
 
 ```
    CREWMATES                        IMPOSTERS
-   boban the boban                  enxhell the enxhellic
-   the bobanita and the bobanita    R2D2 and the other one r2d2
+   boban the Boban                  enxhell the enxhellic
+   the bobanita and the Bobanita    R2D2 and the other one r2d2
    Lola and her friend lola         bola and her friend Ebola
    Marianna who is Marianna         Jo the jo
                                     angelina7 of planet angelina
