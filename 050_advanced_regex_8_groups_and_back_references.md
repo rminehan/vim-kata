@@ -24,8 +24,8 @@ You can run it again to reverse the effect as it's self-inverting.
 ```
 
 ```
-Boban-Jones              TheGerman-Thilo
-Enxhell-Luzsomething     Bobanita-Hayworth
+Jones-Boban              TheGerman-Thilo
+Luzsomething-Enxhell     Bobanita-Hayworth
 ```
 
 Let's break this down:
