@@ -20,7 +20,7 @@ If you highlight the text below and run this substitution you should get the des
 You can run it again to reverse the effect as it's self-inverting.
 
 ```vim
-'<,'>s/\v(\a*)-(\a*)/\2-\1/
+'<,'>s/\v(\a*)-(\a*)/\2-\1/g
 ```
 
 ```
@@ -31,7 +31,7 @@ Luzsomething-Enxhell     Bobanita-Hayworth
 Let's break this down:
 
 ```
-'<,'>  s  /\v(\a*)-(\a*)    /\2-\1/               FIND
+'<,'>  s  /\v(\a*)-(\a*)    /\2-\1/   g           FIND
            -------------     ------               '<,'>   line range corresponding to the visual selection
                FIND         REPLACE               \v      very magic (saves us having to escape the brackets)
                                                   (\a*)   0 or more English letters forming capture group 1
@@ -63,14 +63,14 @@ To achieve this, we can put back references into the search itself (see appendix
 We'll start by just trying to match length 4 palindromes, then tweak our regex to match length 5 ones too.
 
 - prepare the search area as usual
-- do `/\v%V` as usual
-- in between the carets, put `(\d)(\d)`
-    - now we have two groups: 1 and 2 each capturing a digit
+- do `/\v%V`
+- put `(\d)(\d)` to match 2 digits
+    - each digit has its own capture groups: 1 and 2
 - after the above add `\2\1`
     - now it should match length 4 palindromes only
 - after the second `(\d)`, add in `\d?` meaning "optional digit"
     - now it should match all the length 4 and 5 palindromes
-- wrap word boundaries `<>` around the core of the match (to stop us matching subsections of length 6+ palindromes)
+- wrap word boundaries `<>` around the core of the match (to stop us matching palindromes inside longer strings)
 
 ```
   SHOULD MATCH           SHOULDN'T MATCH
@@ -104,12 +104,10 @@ Vim's regex engine doesn't support recursion but there are other engines that do
 Change each duplicate name below to have a capitalized first letter.
 
 We'll define a name as something with at least 4 letters and word boundaries.
-That should stop words like "the" getting matched.
+That should prevent words like "the" and "34592" being considered names.
 
-We'll search the text below for names that occur twice using a back reference.
-We'll put the zoom operators `\zs` and `\ze` around the second occurence and then
-use a spiffy trick `\u` to capitalize the first letter in the replace text.
-See `:help sub-replace-special`.
+First we'll just search the text below for names that occur twice using a back reference.
+Later we'll do replacement.
 
 - prepare the search area as usual
 - do `\v%V`
@@ -125,8 +123,8 @@ See `:help sub-replace-special`.
 
 ```
    CREWMATES                        IMPOSTERS
-   boban the Boban                  enxhell the enxhellic
-   the bobanita and the Bobanita    R2D2 and the other one r2d2
+   boban the boban                  enxhell the enxhellic
+   the bobanita and the bobanita    R2D2 and the other one r2d2
    Lola and her friend lola         bola and her friend Ebola
    Marianna who is Marianna         Jo the jo
                                     angelina7 of planet angelina
@@ -134,7 +132,12 @@ See `:help sub-replace-special`.
 
 At this point your search should be `\v%V\c<(\a{4,})>.{-}<\1>`
 
-Now we'll substitute:
+Now we'll substitute.
+
+We want to capitalize the second occurence of each name.
+We'll put the zoom operators `\zs` and `\ze` to narrow the matched part to just the second name,
+then use a spiffy trick `\u` to capitalize the first letter in the replace text.
+See `:help sub-replace-special`.
 
 - do `:'<,'>s/` to start a substitute on the last visual selection (you'll have to type in the range manually)
 - do `<c-r>/` to insert in the last search term
@@ -147,9 +150,9 @@ Now we'll substitute:
 The transformation should have been:
 
 ```
-   boban the Boban                               boban the boban
-   the bobanita and the Bobanita        ---->    the bobanita and the bobanita
-   Lola and her friend Lola                      Lola and her friend lola
+   boban the boban                               boban the Boban
+   the bobanita and the Bobanita        ---->    the bobanita and the Bobanita
+   Lola and her friend lola                      Lola and her friend Lola
    Marianna who is Marianna                      Marianna who is Marianna
 ```
 
@@ -159,31 +162,34 @@ Optionally hit `u` to undo and try other case variants in place of `\u` like:
 - `\U` to uppercase all subsequent characters until hitting an `\E`
 - `\L` to lowercase all subsequent characters until hitting an `\E`
 
-One thing that might be confusing you is how we used `\u` in one of the warm up exercises to mean "upper case letter",
-but here it means "upper case the next letter".
-In the former example, `\u` was appearing in the search, not the replacement.
-See `:help /\u` for the search version and `:help s/\u` for the replacement version.
+Note that `\u`, `\l` etc... have this meaning when they're in the _replacement_ section.
+In the match section, `\u` actually means an "upper case letter" and `\U` means a "not upper case letter".
+There's an example of this in the appendix.
+See `:help /\u` or `:help /\U` for the search versions and `:help s/\u` or `:help s/\U` for the replacement versions.
 
 ## Exercise 3
 
-Completely uppercase all the Bobany words below where a Bobany word is defined as one of:
+For this exercise we want to completely uppercase all "Bobany" words where a Bobany word is defined as one of:
 
 - Bob
 - Boba
 - Boban
 - Bobany
 
-(ignoring case)
+So:
 
-The above list is like saying:
+- "Boban" -> "BOBAN"
+- "Bobany" -> "BOBANY"
+- "Bo" wouldn't change
+- "Bobany2" wouldn't change
+
+Before we dive into the exercise, we need to think about a smart way to match these words.
+
+The essence of Bobany-ness is:
 
 > It must be a substring of "Bobany" from position 0, but it needs to be at least length 3
 
 The length 3 condition rules out "", "B", and "Bo".
-
-Another way to express it is:
-
-> You can be lazy and omit trailing letters of "Bobany", as long as at least 3 are left
 
 To match this we _could_ do something like `(Bob|Boba|Boban|Bobany)`.
 The duplication isn't nice though and it would be easy for a typo to sneak in.
@@ -193,10 +199,9 @@ ie. match "Bob" and then either: the empty string, "a", "an" or "any".
 
 Be careful of order too. A `(..|..|..)` will short circuit out on the first match it gets.
 So if the text were "Boban", it would just match the "Bob" because the empty string case would win out.
-So we'd need to reverse the order - longest to shortest.
+So we'd need to reverse the order - longest to shortest: `Bob(any|an|a|)`
 
-As a general strategy though this won't work well for longer strings.
-For example "Bobanity" strings ranging from "Bo" to "Bobanity".
+This will work, but as a general strategy it's not very good particularly if we had a really long string.
 
 Thankfully vim has a thing for this called a "sequence" (`:help /\%[`).
 You give it a sequence of characters and it will match as far as it can into that sequence.
@@ -205,12 +210,14 @@ The syntax in very magic mode is `%[...]` and in magic mode down it's `\%[...]`.
 
 For example `%[abc]` will match "a", "ab" and "abc".
 
+Let's first use this to just match out Bobany words:
+
 - prepare the search as usual
 - do `/\v%V`
 - add `bob` to require matching at least 3 letters
 - add a `\c` after `%V` to make it case insensitive
 - add a sequence `%[any]` after `bob`
-- put word boundaries around `bob%[any]`
+- put word boundaries around `bob%[any]` to avoid partially matching inside words like "Bobby"
 - lock in the search with enter
 
 ```
@@ -226,17 +233,19 @@ The final pattern should be: `\v%V\c<bob%[any]>`
 Now to substitute.
 
 The task is to completely uppercase the matches,
-which we can do by putting with `\U` before a back reference in our replacement.
+which we can do by putting with `\U` before a back reference in our replacement (see `:help s/\U`).
 
 - do `:'<,'>s/` to start a substitution
 - do `<c-r>/` to insert what's in the `/` register (the last search)
 - do `/` to start replacing
 - put in `\0` (referring to the entire match)
 - put `\U` just before it (to uppercase it)
+- add `/g` at the end to allow multiple replacements per line (even though none of the imposters should match)
 - hit enter
 
-All the crewmates above should have gotten completely uppercased.
-The imposters won't have because we are only replacing one match per line.
+The final substitution should be: `'<,'>s/\v%V\c<bob%[any]>/\U\0/g`
+
+All the crewmates above should have gotten completely uppercased and none of the imposters.
 
 For extra points, hit `u` to undo and run the substitution again using `\U&` instead of `\U\0`.
 The appendix explains that `\0` and `&` represents the entire match.
