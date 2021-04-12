@@ -208,8 +208,8 @@ McBoban
 bobanita
 ```
 
-The command will have given an error like:
- 
+The command will probably have given you an error like:
+
 ```
 E486: Pattern not found: \v\C%(BOBANS\\>|Bobans\\>|bobans\\>|Boban\\>|boban\\>|BOBAN\\>)
 ```
@@ -222,18 +222,20 @@ A few observations:
     - that won't match as we don't have literal backslashes in our text
 - maybe if we just leave off the `\` it will work?
 
+### Try again
+
 So:
 
 - do `gv`
 - do `:S/Boban{,s}>/Enxhell{,en}/g<enter>`
 
-This time we get:
+I've had different experiences running this. Sometimes I get:
 
 ```
 E486: Pattern not found: \v\C%(\\V<BOBANS>|\\v<Bobans>|\\v<bobans>|\\v<boban>|\\V<BOBAN>|\\v<Boban>)
 ```
 
-It's putting `\\v` or `\\V` before each potential match which means literal backslash then 'v' or 'V'.
+Other times I get that it says it's done 7 replacements, but it doesn't actually change anything.
 
 My take away from this is that `Subvert` is not intended for use with magic characters.
 There's complex text transformations and it's too hard to reason about what magic characters will end up as.
@@ -391,18 +393,18 @@ For an even more epic search let's put back plurals:
 - do `:S/boban{,s}/enxhell{,en}/v<enter>`
 
 ```
-enxhell
-Enxhellen
-ENXHELL
+boban
+Bobans
+BOBAN
 Mcbobans
-McEnxhell
-McENXHELLEN
-Ah_enxhell
-Ah_Enxhellen
-Ah_ENXHELL
-Mc.enxhellen
-Mc.Enxhell
-Mc.ENXHELLEN
+McBoban
+McBOBANS
+Ah_boban
+Ah_Bobans
+Ah_BOBAN
+Mc.bobans
+Mc.Boban
+Mc.BOBANS
 ```
 
 This one has search term:
@@ -439,6 +441,8 @@ Ahenxhellen
 AHENXHELLEN
 Enxhellen
 ```
+
+We can put these permutations in infix position inside words too.
 
 ## Exercise 7 - switching words
 
