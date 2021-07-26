@@ -82,7 +82,7 @@ Let's break down the first one:
 
 The second one is the same except the normal command is `^x`:
 
-- `^` means move the cursor to the start of the line
+- `^` means move the cursor to the first non-whitespace character on the line
 - `x` means delete the character the cursor is on
 - the effect of this is to remove the "#" we previously inserted 
 
