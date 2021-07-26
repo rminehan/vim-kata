@@ -67,7 +67,7 @@ Counts can be combined with motions.
 For example `j` means to go down 1 line and `30j` means to go down 30 lines.
 
 We can use motions as text objects, hence `d30j` would mean "delete from here down 30 lines (inclusive)".
-Because it's inclusive it delete 31 lines overall.
+Because it's inclusive it deletes 31 lines overall.
 
 Use this new foo to delete the lines that start with "DELETE ME":
 
@@ -103,7 +103,7 @@ This is the same as just deleting forward 12 words. So you could simplify that t
 
 # Counts with `c` (change)?
 
-Running `3ciw` then entering new text like "Thilo" will not the next 3 words into 3 "Thilo"s.
+Running `3ciw` then entering new text like "Thilo" will not change the next 3 words into 3 "Thilo"s.
 
 It will instead delete the 3 words, go into insert mode and enter "Thilo". We'll have to find those extra Thilo's somewhere else.
 
