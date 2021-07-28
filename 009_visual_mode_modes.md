@@ -12,7 +12,7 @@ There is also "line" and "block" mode.
 This is much more convenient for line based operations (although we'll see that usually existing non-visual tools
 replace most of the use cases)
 
-`<c-v>` (control v) puts you into "block" mode which is a more unusual mode you won't in many editors.
+`<c-v>` (control v) puts you into "block" mode which is a more unusual mode you won't have in many editors.
 
 You can switch visual modes mid-highlight using the same shortcuts to enter those modes. For example:
 
@@ -42,7 +42,8 @@ Move all the zero lines to below the one lines:
 ```
 
 (Note this is just to demonstrate using visual line mode - a much better way to cut the 3 lines of zeroes
-would have been do put your cursor on the first line of zeroes and do `d2j`, ie. "delete down 2 lines".
+would have been do put your cursor on the first line of zeroes and do `d2j`, ie. "delete down 2 lines",
+or `3dd`, ie. delete the current line 3 times)
 
 Resist the urge to rely on visual line mode when there are faster, more vimmy ways to do things.
 
