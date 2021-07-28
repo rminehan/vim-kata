@@ -101,7 +101,7 @@ Use filtering and `jq` to prettify it into standard multi-line json.
 
 ```
 
-### Exercise 4 - computations
+## Exercise 4 - computations
 
 We want to quickly work out what 42 * 60 - 23 is an put that into our code.
 
@@ -135,6 +135,20 @@ For those who wonder how Rohan generates:
 in his slides,
 
 I filter it through the `figlet` program.
+
+If you want to do this yourself:
+
+- install `figlet`
+- put your cursor anywhere on the text below
+- do `!ipfiglet`
+
+```
+
+make
+me
+big!
+
+```
 
 # Summary: Filtering and cli tools
 
