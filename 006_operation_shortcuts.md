@@ -20,6 +20,7 @@ These are handy particularly because vim doesn't come with a simple text object 
 You have to resort to motions, highlighting or using the shortcuts above.
 
 There is a nice plugin `kana/vim-textobj-line` which adds the `il` (inside line) and `al` (around line) text objects.
+More on that in [kata 36](036_line_and_buffer_text_objects.md)!
 
 # Exercises
 
@@ -62,7 +63,8 @@ Line 3
 
 ## Exercise 3
 
-Completely delete all the lines that start with "Boban" and crop the lines with "Boban" in the middle by removing from "Boban" to the right.
+Completely delete all the lines that start with "Boban"
+and crop the lines with "Boban" in the middle by removing from "Boban" to the right.
 
 - move your cursor to "Boban is supreme"
 - do `dd`
@@ -81,3 +83,13 @@ We ate a super supreme. Boban did too.
 Boban is python
 We saw a python eat someone. Boban is gone.
 ```
+
+# Summary
+
+Vim has a lot of these seemingly cryptic ad-hoc shortcuts,
+but there is actually a basic pattern to them.
+
+Once you understand the pattern it becomes a lot easier to remember them.
+
+Today's kata showed that for most operators, when they're used in the uppercase or repeated form,
+they tend to operate on the current line or something related to it.
