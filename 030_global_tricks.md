@@ -23,6 +23,7 @@ We can use this mighty command to solve our problem:
 - do `:let @a = ''`
 - do `:.,+4 g/\v[.,]$/put a`
 - hit `u` to undo so we can do it even more directly
+- move your cursor to "space" below
 - do `:.,+4 g/\v[.,]$/put _`
 
 ```
@@ -55,7 +56,7 @@ Duplicate every uncommented line in the block below.
 For this one we can just use a normal command to yank the current line and paste below.
 
 - put your cursor on the first line
-- do `:.,+4 v/\v^#/normal Yp`
+- do `:.,+4 v/\v^#/normal yyp`
 
 ```python
 # Comment
@@ -70,7 +71,7 @@ that _doesn't_ match the pattern.
 
 The pattern `\v^#` is the same one from last time which matches any line starting with '#'.
 
-`Yp` is `Y` (yank current line) plus `p` (paste below current line).
+`yyp` is `yy` (yank current line) plus `p` (paste below current line).
 
 You might be wondering why the above didn't cause an infinite loop. For example after it duplicates `a = None`,
 won't it then also read that duplicate line in its next step, then duplicate that etc...
@@ -93,9 +94,9 @@ e.g. `:3-5 move 10` moves lines 3-5 below line 10 (ie. line 11).
 
 When you don't specify a range it uses the current line (ie. `.`) which works nicely for us here.
 
-- figure out the line number for the first backtick line in the second block (I'll assume it's 108)
+- figure out the line number for the first backtick line in the second block (I'll assume it's 109)
 - put your cursor on the first line of python code
-- do `:.,+4 v/\v^#/move 108` (put in the line number you found)
+- do `:.,+4 v/\v^#/move 109` (put in the line number you found)
 
 ```python
 # Comment
@@ -117,9 +118,9 @@ This time we'll _copy_ all the uncommented lines from the first block to the sec
 
 There's a handy `copy` ex command that works like `move`:
 
-- figure out the line number for the first backtick line in the second block (I'll assume it's 132)
+- figure out the line number for the first backtick line in the second block (I'll assume it's 133)
 - put your cursor on the first line of python code
-- do `:.,+4 v/\v^#/copy 132` (put in the line number you found)
+- do `:.,+4 v/\v^#/copy 133` (put in the line number you found)
 
 ```python
 # Comment
@@ -134,15 +135,15 @@ def f():
 
 This time the text was reversed. To understand this, think about each copy being applied sequentially:
 
-- `a = None` gets copied to after line 132
-- `def f():` gets copied to after line 132 (so it's now above `a = None` and pushes it down)
-- `    return None` gets copied to after line 132 (so it's now above the other 2)
+- `a = None` gets copied to after line 133
+- `def f():` gets copied to after line 133 (so it's now above `a = None` and pushes it down)
+- `    return None` gets copied to after line 133 (so it's now above the other 2)
 
 Overall the effect is reversing the lines.
 
 The reason it didn't happen in the `move` exercise, was because we were deleting the line from the original
 block which shifted everything below it up 1 line.
-This meant that line 108 no longer represented the backtick line, but was tracking the last moved line.
+This meant that line 109 no longer represented the backtick line, but was tracking the last moved line.
 
 How to fix the reversing?
 The issue is that fixed line numbers are too static.
@@ -182,12 +183,12 @@ e.g. `:10-15 yank a` copies lines 10-15 into register `a`.
 When the range is missing it uses the current line.
 
 - put your cursor on the first line of python code
-- do `.,+4 v/\v^#/yank a`
+- do `:.,+4 v/\v^#/yank a`
 - do `:echo @a` to see if it worked
 - (what? It just says "    return None" - this is because each individual ex command is writing over the register)
 - put your cursor on the first line of python code
 - do `:let @a = ''` (clearing the register)
-- do `.,+4 v/\v^#/yank A`
+- do `:.,+4 v/\v^#/yank A`
 - do `:echo @a` to see if it worked
 
 ```python
