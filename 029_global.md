@@ -91,12 +91,14 @@ Print is a simple little command for printing what goes into it to the output wi
 - do `:.,+4 global/Boban/print<enter>`
 - (this will show you the output window and prompt you to hit Enter)
 - (the previous search picked up "Bobanita" lines - let's add word boundaries)
+- move your cursor back to the first line if it's moved ("Boban says this")
 - do `:.,+4 global/\v<Boban>/print<enter>` then Enter again when you've inspected the output
     - remember the `\v` is for "very magic" mode
     - `<` and `>` are left and right word boundaries
     - the left boundary prevents "McBoban" getting matched
     - the right boundary prevents "Bobanita" getting matched
 - (we can shorten this a bit)
+- move your cursor back to the first line if it's moved ("Boban says this")
 - do `:.,+4 g/\v<Boban>/p<enter>` and Enter again
     - (we shortened `print` to `p` here)
 
@@ -157,6 +159,7 @@ Translating this to a vglobal statement it's:
 - put your cursor on the first line
 - do `:.,+4 vglobal/\v^#/normal I#<enter>`
 - hit `u` to undo so that we shorten it a little
+- put your cursor on the first line
 - do `:.,+4 v/\v^#/normal I#<enter>`
     - (we just changed `vglobal` to `v`)
 
