@@ -31,7 +31,7 @@ Eventually you know what arguments you want to pass and you're ready to start ty
 
 In a situation like that the `.` and `^` marks are really useful.
 
-- move your cursor to the closing bracket on `val boban = person()`
+- move your cursor to the closing bracket on `val boban = person()` in the code block below
 - (we want to call the person function)
 - do `i` to start typing
 - enter some random id like "2304234" and a comma and a space
@@ -67,6 +67,11 @@ Note also `gi` would have been even better here - we'll cover it in [kata 33](03
 
 ## Exercise 2
 
+In this exercise we'll use the `[` and `]` marks that represent the boundaries of the last yank.
+
+- put your cursor on `name` in the code snippet below
+- then yank it by doing `yiw`
+
 We were regaling our fellow developers with tales of how forgetful we are.
 
 Then one of them said: Actually we want to rename "name" to "firstName".
@@ -75,16 +80,27 @@ You think to yourself and despite all your forgetfulness you remember that you h
 
 That yank would have been marked on the left and right by `[` and `]` respectively.
 
-- to make it easier to see what's going on split the buffer with `:split` so that the instructions are in one buffer
+- do `<backspace>]` to jump the end of the last yanked area
 - do `<backtick>[` to jump to the left of the last yanked area
 - do `a` to just into insert after the cursor
 - do `<backspace>firstN<escape>` to change it to first name
-- quit the split with `:q`
+
+```scala
+def person(id: String, age: Int, name: String): Person = ...
+
+val boban = person(2304234, 20, "Boban")
+```
 
 (Note above if we had to make other replacements of "name" to "firstName" it would probably have been better
 to just do `ciwfirstName` as that is easier to repeat with the mighty dot in other locations.
 
 ## Exercise 3
+
+In this exercise we'll use the `<` and `>` marks that represent the boundaries of the last visual selection.
+
+- put your cursor on `firstName` in the code snippet below
+- then visually select the whole word plus the ':' by doing `viW`
+- then escape or `v` to return to normal mode
 
 Then your friends say:
 
@@ -93,13 +109,18 @@ Then your friends say:
 
 Right now it's "firstName" so we just need to jump to the back of that word and add an "n".
 
-- split the buffer again with `:split`
-- jump to the right hand mark for our last yank with `<backtick>]`
-- (hmmmm - that mark has drifted because we modified the text since we yanked it)
-- do `e` to move to the end of the word
-- do `a` to go into insert after the cursor
+- jump to the left hand mark for our last visual selection with `<backtick><`
+- jump to the right hand mark for our last visual selection with `<backtick>>`
+- do `i` to enter insert mode
 - do `n<escape>` to add an "n"
-- quit the split with `:q` 
+
+```scala
+def person(id: String, age: Int, firstName: String): Person = ...
+
+val boban = person(2304234, 20, "Boban")
+```
+
+That should keep the Germans happy!
 
 # Ex commands on visual selections
 
