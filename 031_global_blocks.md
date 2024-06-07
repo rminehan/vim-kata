@@ -18,20 +18,21 @@ The ex command gets applied to the lines within these blocks.
 
 # Example 
 
-Let's uppercase the code between the start and end tags below.
+Let's uppercase the code between the `<start>` and `<end>` tags below.
 
-The start/end markers are `<start>`/`<end>`.
-The carets are magic characters (word boundaries) so we'll use `\V` (very no magic) to remove all the
-magic and have them as literal carets.
+Note that the carets `<>` will be understood as word boundaries by vim's regex engine,
+so we'll use `\V` (very no magic) to remove all the magic and treat them literally.
+
 Also we'll put start line anchors (`^`) on them so that they don't match the `<start>` and `<end>` words
 in this paragraph!
+Note that we've put the vertical carets _before_ the `\V` so that they keep their magic aren't treated literally.
+
 That makes the patterns `^\V<start>` and `^\V<end>`.
-Note that we've put the vertical carets _before_ the `\V` so that they keep their magic.
 
 We don't want to uppercase the tags themselves, so:
 
-- the start tag has an offset of `+1` (start the block one line below the match)
-- the end tag has an offset of `-1` (end the block one line above the match)
+- the start tag has an offset of `+1` (start the upper casing one line below the match)
+- the end tag has an offset of `-1` (stop the upper casing one line above the match)
 
 We'll use the whole buffer as a range as there's no other examples like this one later on.
 Remember for global, you can leave off the range if it's the whole buffer.
@@ -39,7 +40,7 @@ Remember for global, you can leave off the range if it's the whole buffer.
 The command to uppercase a line is `gUU` (short for `gUgU` from [kata 6](006_operation_shortcuts.md)),
 so we'll use a normal command.
 
-Putting that together:
+Putting that together, run the below (it doesn't matter where your cursor is)
 
 ```
 :global /^\V<start>/+1, /^\V<end>/-1  normal gUU
@@ -65,6 +66,8 @@ Bobanish
 And friends
 <end>
 ```
+
+Whoa!
 
 # Exercises
 
