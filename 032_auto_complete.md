@@ -45,7 +45,7 @@ Bobanish
 Bobanson
 ```
 
-Use this to do word-complete the sentence below to "They called him Bobanson":
+Use this to word-complete the sentence below to "They called him Bobanson":
 
 - put your cursor on the line
 - hit `A` to go to the end of the line and enter insert mode
@@ -114,16 +114,14 @@ and omnicompletion which searches for words outside the current buffer.
 During the creation of these kata I used linewise completion a lot because there is a lot
 of repetition of instructions between katas.
 I've also found that when writing tests there are often small sections of code repeated in different
-tests (e.g. simple setup code) and linewise completion works is very useful.
+tests (e.g. simple setup code) and linewise completion is very useful.
 
 Filename based completion has been very useful during these kata because of the cross referencing of kata's.
 It's great for markdown files and cross linking.
 The paths are relative to your working directory which works well for projects with simple hierarchies,
-but not complex maven/sbt projects with complex structures.
+but not complex projects with complex structures.
 
-People who use vim for heavy coding will use sophisticated frameworks like coc to support much more complex
-auto-completion frameworks, e.g. the language-server-protocol (LSP) and tab-nine.
+People who use vim for heavy coding will use sophisticated frameworks to support much more complex
+auto-completion frameworks, e.g. the language-server-protocol (LSP).
 These frameworks will often automatically bring up the auto-complete menu and let you use the tab key to navigate
 through the results.
-Heavy use of these tools is sometimes referred to as "dark vim" because some people feel it's too heavyweight
-and was not what vim was designed to be used for.
