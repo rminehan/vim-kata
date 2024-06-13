@@ -164,9 +164,9 @@ As mentioned above, targets.vim adds a lot more pair based text objects, e.g. `i
 On each line below, put your cursor somewhere on "boban" and follow the instructions to the right: 
 
 ```
-20 + 30 + Boban + 40         di+
-20 + 30 + Boban + 40         dI+
-20 + 30 + Boban + 40         da+
+20 + 30 + boban + 40         di+
+20 + 30 + boban + 40         dI+
+20 + 30 + boban + 40         da+
 www.boban.leadiq.com         da.
 /home/boban/ml               ci/enxhell
 |james|boban|clement|        ya|:echo @"
@@ -181,7 +181,7 @@ whereas with brackets, the two bracket characters are a true pair.
 
 We'll practice the nested or "multi" text operators.
 
-On each line below, out your cursor somewhere on "Boban" and follow the instructions to the right.
+On each line below, out your cursor somewhere on "boban" and follow the instructions to the right.
 
 ```
 f( ( boban ) ) g            d2i)
