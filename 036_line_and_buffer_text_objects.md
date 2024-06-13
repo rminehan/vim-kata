@@ -3,8 +3,8 @@
 Vim oddly doesn't come with built in text objects for the current line or buffer,
 even though these are such common text objects.
 
-Usually the current line is referenced implicitly by uppercasing or doubling an operator
-(e.g. `dd` for delete current line, `Y` for yanking the current line).
+Usually the current line is referenced implicitly by doubling an operator
+(e.g. `dd` for delete current line, `yy` for yanking the current line).
 
 For applying buffer wide changes you'd usually have to resort to an equivalent ex command which uses `%`
 as the range, or visually selecting the entire buffer with `ggVG` then applying the operator.
@@ -29,7 +29,7 @@ The latter two use it to define buffer and line text objects.
 
 The mnemonic for the buffer is 'e' for "entire".
 
-('b' is already being used used for brackets, e.g. `di)` is equivalent to `dib`)
+('b' is already being used for brackets, e.g. `di)` is equivalent to `dib`)
 
 The plugin provides two text objects:
 
@@ -63,14 +63,14 @@ commands to remember.
 Likewise there might be times where you want to use the "inside line" to get a trimmed result,
 e.g. if you're copy-pasting a line of text out.
 
-Even if you want the whole line, yanking with `Y` or `yy` capture that new line character at the end of the line,
+Even if you want the whole line, yanking with `yy` captures the new line character at the end of the line,
 and vim interprets the register as being a line based yank rather than a character based yank.
 That means when you paste it, it will paste it below the current line not after your cursor on the same line.
 In the cases where you want it after your cursor this is annoying and can be confusing.
 
 Another place where those trailing newlines are annoying is for copy-pasting text out of vim into other apps,
 e.g. something expecting a password, a url field etc...
-That extra subtle newline character often doesn't play well with those apps and cause subtle issues.
+That extra newline character often can cause subtle issues.
 
 Note that if you _don't_ have a text object for the current line, you can get rid of this pesky newline
 by using the motion `g_` which takes you to the end of your line just before the newline.
@@ -115,7 +115,7 @@ We'll play with the line of scala code below comparing our text object to the bu
 - do `>il` to right shift the current line, then `<al` to reverse it (inside or around doesn't matter here)
 - do `dil` to delete inside the line, then `u` to undo
 - do `"tyal` which yanks the line into register `t` (for "text object")
-- do `"dY` which yanks the whole line using regular `Y` into the register `d` (for "default"), then do `:echo @d`
+- do `"dyy` which yanks the whole line using regular `yy` into the register `d` (for "default"), then do `:echo @d`
 - do `:echo @t` and `:echo @d` and note the extra blank line for `@d`
 - to confirm they're different do `:echo @t == @d` (should get `0` printed for false)
   - do `:echo stridx(@d, @t)` to show that `@t` is a substring of `@d` at index 0
