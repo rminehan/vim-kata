@@ -8,7 +8,7 @@ It provides ways to visually detect trailing whitespace and remove it.
 
 # Exercises
 
-So do the exercises you'll need the kata installed.
+To do the exercises you'll need the plugin installed.
 
 ```vim
 Plug 'ntpeters/vim-better-whitespace'
