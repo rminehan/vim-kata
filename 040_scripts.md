@@ -90,7 +90,7 @@ $ global /^$/delete
 $ global /^$/delete
 ```
 
-Now we'll apply it something
+Now we'll apply it to something:
 
 - in a similar way to before, highlight the block below
 - yank it with `y`
@@ -176,7 +176,7 @@ Note that for this exercise we're assuming you're using a vim launched from the 
 - highlight the block below 
 - do `:` (which should generate a range)
 - add `write! input<enter>`
-- open another terminal and do `cat input` to confirm there's a file `input` with the contents we expected
+- open another terminal into this project and do `cat input` to confirm there's a file `input` with the contents we expected
 - in that terminal do `[YOUR VIM COMMAND] -c "source whitespace_clean.vim" input`
     - where `[YOUR VIM COMMAND]` is what you've been using to launch vim, e.g. `vim`, `vi`, `nvim`, `gvim` or `v`
 - (this isn't quite what we wanted - we're still in vim but we wanted a non-interactive session)
@@ -206,7 +206,7 @@ The `-c` command lets you run an ex command after loading the file. In our case 
 source whitespace_clean.vim | wq
 ```
 
-This is vimscript:
+This is the vimscript:
 
 - `source whitespace_clean.vim` runs the cleaning file over the current buffer (`input`)
 - `|` delimits commands -  analogous to `;` in langauges like java or C (it's not like a bash pipe)
