@@ -100,11 +100,11 @@ Replace the "boban"s below with "bobanita"s.
 - hammer on `.` until they're all converted
 
 ```
-Her name was boban, she lived in the distant Albanian mountains.
+Her name was bobanita, she lived in the distant Albanian mountains.
 
-A courier came to boban's door with a dinner invitation.
+A courier came to bobanita's door with a dinner invitation.
 
-But before boban could read it, the courier was taken.
+But before bobanita could read it, the courier was taken.
 ```
 
 Note an important part of this working is that the cursor is at the end
@@ -141,7 +141,7 @@ Old McBoban replied: "A boban is as a boban does. Such has always been the way o
 ## Exercise 3
 
 Uppercase all the characters from the first Boban to the second below inclusive of the Bobans.
-This is an ad-hoc text object so visual selection makes sense herej
+This is an ad-hoc text object so visual selection makes sense here.
 
 - put your cursor on the opening backticks
 - do `gn` to visually select the first "Boban" 
