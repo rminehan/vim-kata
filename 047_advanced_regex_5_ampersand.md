@@ -35,9 +35,9 @@ In the second example, there's no location in the string where both `Boban` and 
 
 ## More complex example
 
-You can and together multiple branches.
+You can 'and' together multiple branches.
 
-Highlight the block below then do `\v%V(Boban)&(\a{4})&([^a]{3})`
+Highlight the block below then do `/\v%V(Boban)&(\a{4})&([^a]{3})`
 
 ```
 Boban

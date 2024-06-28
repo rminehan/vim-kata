@@ -253,12 +253,12 @@ Usually tilda is used in the replace section of a `substitute`, but we can also 
 - replace the `b` with `~` to find cases where two triplets got replaced back to back
 
 ```
-aa
-x
+aaa
+aaa
 ab
-xx
-xxb
-xc
+aaaaaa
+aaaaaab
+aaac
 ```
 
 Turn `hlsearch` off again if you're going to do the next exercise.

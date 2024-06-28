@@ -76,12 +76,12 @@ Hit `:` then type in:
 execute '/YEAR:' . strftime('%Y')<enter>
 ```
 
-Assuming the current year is something from 2021-2026, then this should match something in the block below:
+Assuming the current year is something from 2024-2029, then this should match something in the block below:
 
 ```
-YEAR:2021  YEAR:2024
-YEAR:2022  YEAR:2025
-YEAR:2023  YEAR:2026
+YEAR:2024  YEAR:2027
+YEAR:2025  YEAR:2028
+YEAR:2026  YEAR:2029
 ```
 
 Do `:echo @/` to see what search was performed. It should be something like "YEAR:2021".
@@ -92,7 +92,7 @@ Vimscript has a function `line` which takes a string expression and tells you th
 
 For example:
 
-- `line('.')` returns the current line the cursor is on
+- `line('.')` returns the current line number the cursor is on
 - `line('$')` returns the line number of the last line in the buffer
 - `line('w0')` returns the line number of the first line visible on screen
 
@@ -153,7 +153,8 @@ Now we'll rerun it with a different value yanked:
 Now we'll show using `@:` to rerun the previous ex command:
 
 - yank this: `\cB.ban` by putting your cursor between the backticks and doing `yi<backtick>`
-- hit `@:`
+- hit `:` and use `<c-p>` to bring up the execute command from above
+- hit enter
 
 This should match the usual suspects and also "Biban".
 
@@ -176,7 +177,7 @@ where delims can be: space, underscore or hyphen.
 
 Our pattern will also read case sensitivity settings from register `c`.
 Expected values are either `\c`, `\C` or just empty.
-It will get inserted near the start of our pattern but it could go anywhere.
+By convention it will get inserted near the start of our pattern but really it could go anywhere.
 
 We're also going to use `%V` from our first advanced regex kata to restrict the matching to
 the most recently selected area.

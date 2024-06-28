@@ -44,7 +44,7 @@ Copying that out by hand will be a bit tedious. A shortcut would be to put your 
 (e.g. `iskeyword`) then do `:set <c-r><c-a><enter>`.
 Remember `<c-r><c-a>` inserts the big word under the cursor.
 
-Another way would be to just yank the line with `Y` then do `:<c-r>"<enter>`.
+Another way would be to just yank the line with `yy` then do `:<c-r>"<enter>`.
 Remember `<c-r>[REGISTER]` copies text from the register.
 
 Conceptually our keyword and identifier chars form a venn diagram like:
@@ -114,8 +114,8 @@ Wordy pattern: \v    %V    (^|\s)@<=    [CORE PATTERN]    ($|\s)@=        %V - r
 
 We can use our programming chops from the previous kata to build this dressing around a core pattern.
 
-We'll assume the core pattern in register `p`. Put your cursor on the nnoremap command below
-and do: `Y:<c-r>"<enter>`
+We'll assume the core pattern is in register `p`. Put your cursor on the nnoremap command below
+and do: `yy:<c-r>"<enter>`
 
 ```vim
 nnoremap ? :execute '/\v%V(^\|\s)@<=' . @p . '($\|\s)@='<enter>
@@ -208,7 +208,7 @@ set isident?
 " isident=@,48-57,_,192-255
 ```
 
-The format used above to describe groups of characters is a quirk vim format.
+The format used above to describe groups of characters is a quirky vim format.
 A quick summary of the above is that it's a comma separated list of allowed character groups:
 
 - `@` - ascii letters (English letters and some European letters like à)

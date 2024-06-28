@@ -64,10 +64,9 @@ See the [setup guide](advanced_regex_exercises_setup.md).
 
 ## Exercise 1
 
-Join all the lines below such that trailing whitespace from the upper line and leading whitespace on the lower line
+We will join all the lines below such that trailing whitespace from the upper line and leading whitespace on the lower line
 get combined and squashed into a single space.
-
-We'll attack this with a `substitute`:
+_But_ we will do it with a regex `substitute` rather than using the trusty join operator (`J`):
 
 - put your cursor on the first line of text
 - do `vip` then `jj`
@@ -89,6 +88,9 @@ The core of the pattern is `\s*$\_s*`:
 
 - `\s*$` - trailing whitespace
 - `\_s*` - the newline character and then any leading whitespace on the next line(s)
+
+You might find it odd that we included `%V` given that we had already limited the search to the highlighted lines.
+This is addressed in exercise 2.
 
 ### Some notes for the curious (skip during kata):
 
@@ -125,16 +127,16 @@ See the detailed analysis in [this article](dangers_of_visual_mode.md) for more 
 
 ## Exercise 2 - prison break
 
-In exercise 1, the pattern we used had a `%V` at the end.
+In exercise 1, the pattern we used had a seemingly redundant `%V` at the end.
 
 This was to stop a kind of prison break by the regex engine.
 It's easiest to understand by running the exercise again without it.
 
-Note though it will mess up the backticks in the block and probably your formatting
-so you'll want to undo after the substitute.
+(Note though it will mess up the backticks in the block and probably your formatting
+so you'll want to undo after the substitute)
 
 - put your cursor somewhere in the first paragraph
-- do `Vipjj`
+- do `vipjj`
 - do `:s/\v\s*$\_s*/ /` (without enter)
 - if you have `inccommand` setup, you can already see how the backticks ride up, otherwise hit enter then `u`
 
@@ -199,9 +201,12 @@ To see this let's ask `substitute`:
 - visually select the area above
 - do `:s/<c-r>//x\r/<enter>`
 
+Note the `<c-r>` here means I want you to hit control r, not type in the literal characters "<c-r>".
 Remember `<c-r>` followed by a register inserts from that register.
 In our case the `/` register is our last search.
 So this was just a show-off way to put the last search into our substitute.
+
+Or you can type out `:'<,'>s/\v%V\_w+/x\r/`
 
 We're replacing all matches of our pattern with `x<newline>`.
 The newline is to stop the tildas riding up on to the previous line as the match includes all the newlines in the block.
@@ -334,7 +339,7 @@ We can use this to only remove blank lines at the end of a file:
 
 - do `:new<enter>`
 - fill it with random text and some trailing blank lines
-- do `:%s/\v\_s*%$/g<enter>`
+- do `:%s/\v\_s*%$//g<enter>`
 - do `:q!<enter>` when you're done
 
 The search is similar to the previous exercise except it uses `%$` instead of `$`.
