@@ -11,8 +11,8 @@ However these characters also have special meaning in regexes, e.g.
 - `.` means "any character"
 
 It gets more confusing when you have a search that requires a special character
-in both it's literal form as well as its regex form, e.g. "one of more `+`'s".
-You will need to escape one of the plus's and not escape the other.
+in both it's literal form as well as its regex form, e.g. "one or more `+`'s".
+You will need to escape one of the pluses and not escape the other.
 Which way around the escaping happens depends on your search mode.
 
 Vim has 4 search modes:
