@@ -2,7 +2,7 @@
 
 Previously we looked at buffer search and how the search term is a regex.
 
-Most programming languages languages make heavy use of operators like `+.[]*<>` as part of their syntax.
+Most programming languages make heavy use of operators like `+.[]*<>` as part of their syntax.
 
 However these characters also have special meaning in regexes, e.g.
 
