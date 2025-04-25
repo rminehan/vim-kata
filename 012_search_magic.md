@@ -6,7 +6,7 @@ Most programming languages make heavy use of operators like `+.[]*<>` as part of
 
 However these characters also have special meaning in regexes, e.g.
 
-- `*` means "zero of more"
+- `*` means "zero or more"
 - `+` means "one or more"
 - `.` means "any character"
 
