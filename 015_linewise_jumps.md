@@ -7,7 +7,7 @@ Using buffer search for this is overkill:
 - if you have settings like `incsearch` it will make your cursor jump around
 - it will pollute your buffer with highlighting
 - it will pollute your search history
-- it uses regexes which causes confusion when you're wanting to jump to special characters
+- it uses regexes which causes confusion when you want to jump to special characters
 
 Instead vim has simple commands `f` and `t` for jumping to/before a character on the current line.
 
