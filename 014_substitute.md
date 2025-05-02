@@ -150,7 +150,7 @@ In exercise 2 we mapped all searches to "Enxhell" which meant:
 - "boban" -> "Enxhell"
 - "bobn" -> "Enxhell"
 
-It's quite a simplistic replacement that throws away the capitalization of the original text as well as the whether the original
+It's quite a simplistic replacement that throws away the capitalization of the original text as well as whether the original
 text was being used as the formal "Boban" or the nickname "Bobn".
 
 It would be nice for example to map "bobn" to Enxell's nickname "junior" to preserve the original nuance of the text.
