@@ -49,7 +49,7 @@ This is much like the above, just using the `gU` operator instead of `c`.
 
 - put your cursor somewhere inside the first braces
 - do `gUi{`, which is:
-    - `gU` - upper ase
+    - `gU` - uppercase
     - `i{` - inside braces
 - move your cursor to somewhere inside the next braces
 - invoke the power of the mighty dot (do `.`)
