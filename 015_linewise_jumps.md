@@ -59,7 +59,7 @@ See, it _is_ useful! Doing that with `f` would have required a fiddly jump back 
 
 ## Exercise 3
 
-Recall from [lesson 2](002_motions_as_text_objects.md) that motions can be used text objects.
+Recall from [lesson 2](002_motions_as_text_objects.md) that motions can be used with text objects.
 
 Use this powerful knowledge to delete everything _before_ the bracketed text.
 
