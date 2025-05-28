@@ -165,7 +165,7 @@ Then we can manually cleanup line 000 as it's a little different.
 A note about `0`: Generally when you build complex macros it's good practice to explicitly position yourself
 when you do things like moving to a new line.
 This avoids some subtle bugs and weird edge cases.
-As you build macros yourself you'll start to realize a set of "best practices" or "macro hygene" that make them less buggy. 
+As you build macros yourself you'll start to realize a set of "best practices" or "macro hygiene" that make them less buggy. 
 
 # Summary
 
