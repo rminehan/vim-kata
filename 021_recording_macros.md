@@ -39,7 +39,7 @@ Calling a register a "macro" just means: The intention for the data on this regi
 You can still use all your tricks like:
 
 - inspecting them, ie. `echo @[REGISTER]`
-- programmatically building them, e.g. `let @a = @b . @c . 'foo'`
+- programmatically building them, e.g. `:let @a = @b . @c . 'foo'`
 - pasting from registers into buffers, e.g. `"aP`
 - copying from text objects into registers, e.g. `"ayiw`
 
@@ -81,7 +81,7 @@ We'll make another macro to upper case a line - then combine them into a super m
 - do `qb` to start recording into register `b`
 - do `gUU` to upper case all the text on the current line
 - do `q` to stop recording
-- confirm the contents of register `b` with `echo @b`
+- confirm the contents of register `b` with `:echo @b`
 - (we'll combine them into a single macro that both deletes the first 4 characters and uppercases the remaining line)
 - do `:let @c = @a . @b` (remember that `.` is string concatenation in vimscript)
 - move your cursor to line 2 and do `@c` (it should now be "LINE 2")
