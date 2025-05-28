@@ -95,7 +95,7 @@ We'll make another macro to upper case a line - then combine them into a super m
 
 So if our macros compose nicely, we can build new ones quite easily.
 
-## Exercise 3 - bulk macro application 
+## Exercise 4 - bulk macro application 
 
 Usually if you've overcome your laziness and written a macro it's because there were too many lines for you to manually change.
 
@@ -123,7 +123,7 @@ There's 8 lines below that we could apply macro `c` to from exercise 3:
 008 Line 8
 ```
 
-## Exercise 4 (bonus) - 800 Jonathan's standing on a wall
+## Exercise 5 (bonus) - 800 Jonathan's standing on a wall
 
 Imagine we needed to generate a big block of text like: 
 
