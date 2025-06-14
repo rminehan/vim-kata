@@ -80,7 +80,7 @@ You think to yourself and despite all your forgetfulness you remember that you h
 
 That yank would have been marked on the left and right by `[` and `]` respectively.
 
-- do `<backspace>]` to jump the end of the last yanked area
+- do `<backtick>]` to jump the end of the last yanked area
 - do `<backtick>[` to jump to the left of the last yanked area
 - do `a` to just into insert after the cursor
 - do `<backspace>firstN<escape>` to change it to first name
