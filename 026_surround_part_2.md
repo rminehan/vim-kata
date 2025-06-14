@@ -55,7 +55,7 @@ Type this `yss)` from normal mode
 Type this `yss(` from normal mode
 Type this `yss]` from normal mode
 Type this `yss<b>` from normal mode
-Type this `yss"` then `yssffoo` from normal mode
+Type this `yss"` then `yssffoo<enter>` from normal mode
 ```
 
 ## Exercise 3 - surrounding and indenting
