@@ -23,7 +23,7 @@ This can be a lot less fiddly than jumping back to normal mode, pasting from a r
 When you perform operations like yank, delete, change and paste without explicitly mentioning a register,
 the "anonymous" register is used.
 
-It's character is `"` (the same as the character you use to dial up registers in normal mode).
+Its character is `"` (the same as the character you use to dial up registers in normal mode).
 
 It's called the anonymous register because it's the one used when no name is given.
 Another name might be the "default" register.

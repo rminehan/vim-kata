@@ -7,7 +7,7 @@ Using buffer search for this is overkill:
 - if you have settings like `incsearch` it will make your cursor jump around
 - it will pollute your buffer with highlighting
 - it will pollute your search history
-- it uses regexes which causes confusion when you're wanting to jump to special characters
+- it uses regexes which causes confusion when you want to jump to special characters
 
 Instead vim has simple commands `f` and `t` for jumping to/before a character on the current line.
 
@@ -59,7 +59,7 @@ See, it _is_ useful! Doing that with `f` would have required a fiddly jump back 
 
 ## Exercise 3
 
-Recall from [lesson 2](002_motions_as_text_objects.md) that motions can be used text objects.
+Recall from [lesson 2](002_motions_as_text_objects.md) that motions can be used with text objects.
 
 Use this powerful knowledge to delete everything _before_ the bracketed text.
 

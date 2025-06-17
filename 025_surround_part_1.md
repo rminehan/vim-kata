@@ -119,7 +119,7 @@ The last example "( Boban )" with `cs()` is a little trick to quickly remove sur
 
 This one is a bit harder to get the hang of.
 
-There isn't an intuitive operator for adding net new things (for example `d` deletes and `c` changes, but neither creates ex nihilo).
+There isn't an intuitive operator for adding new things (for example `d` deletes and `c` changes, but neither creates ex nihilo).
 
 Hence the `ys` operator is added for creating new surroundings.
 

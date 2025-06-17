@@ -22,7 +22,7 @@ Registers are a place you can store bits of text that you want to use later.
 
 Think of it like having 26 clipboards. 
 
-One of the annoying things about having one OS clipboard is that you only have only one buffer to save text into,
+One of the annoying things about having one OS clipboard is that you only have one buffer to save text into,
 and each new copy writes over your previous one (unless you have a clipboard manager (which you should!))
 
 # Vimscript

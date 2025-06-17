@@ -13,7 +13,7 @@ Code is data? Data is code? What's going on?
 
 We're going to write some instructions into a register and then "play" them.
 
-- do `:let @a = '0xxxx'<enter>`
+- do `:let @a = '0xxxx'
 - move your cursor to line 1 of the block below
 - do `@a` ("play" register `a`)
 - you should see the first 4 characters disappear because we literally did:
@@ -38,8 +38,8 @@ Calling a register a "macro" just means: The intention for the data on this regi
 
 You can still use all your tricks like:
 
-- inspecting them, ie. `echo @[REGISTER]`
-- programmatically building them, e.g. `let @a = @b . @c . 'foo'`
+- inspecting them, ie. `:echo @[REGISTER]`
+- programmatically building them, e.g. `:let @a = @b . @c . 'foo'`
 - pasting from registers into buffers, e.g. `"aP`
 - copying from text objects into registers, e.g. `"ayiw`
 
@@ -55,7 +55,7 @@ Vim lets you do this with "record" - `q[REGISTER]`.
 - start recording into register `a` by doing: `qa`
 - do `04x`
 - press `q` to stop recording
-- inspect register `a` with `echo @a`
+- inspect register `a` with `:echo @a`
 - move your cursor to line 2 and do `@a` to play the macro 
 - move your cursor to line 3 and do `@@` to play the last played macro
 
@@ -81,7 +81,7 @@ We'll make another macro to upper case a line - then combine them into a super m
 - do `qb` to start recording into register `b`
 - do `gUU` to upper case all the text on the current line
 - do `q` to stop recording
-- confirm the contents of register `b` with `echo @b`
+- confirm the contents of register `b` with `:echo @b`
 - (we'll combine them into a single macro that both deletes the first 4 characters and uppercases the remaining line)
 - do `:let @c = @a . @b` (remember that `.` is string concatenation in vimscript)
 - move your cursor to line 2 and do `@c` (it should now be "LINE 2")
@@ -95,7 +95,7 @@ We'll make another macro to upper case a line - then combine them into a super m
 
 So if our macros compose nicely, we can build new ones quite easily.
 
-## Exercise 3 - bulk macro application 
+## Exercise 4 - bulk macro application 
 
 Usually if you've overcome your laziness and written a macro it's because there were too many lines for you to manually change.
 
@@ -107,9 +107,9 @@ There's 8 lines below that we could apply macro `c` to from exercise 3:
 - do `8@c`
 - yikes what happened!? The line just disappeared - that's because we applied the macros 8 times to the same line
     - we need the macro to move us to the next line when it's done so we're ready for the next application
-- do `:let @c = @c . 'j'<enter>`
+- do `:let @c = @c . 'j'`
     - we're effectively appending `j` to our macro which moves us down 1 line
-- do `echo @c` to see what it looks like now, should be: "0xxxxgUUj"
+- do `:echo @c` to see what it looks like now, should be: "0xxxxgUUj"
 - do `8@c` again (should work properly this time)
 
 ```
@@ -123,7 +123,7 @@ There's 8 lines below that we could apply macro `c` to from exercise 3:
 008 Line 8
 ```
 
-## Exercise 4 (bonus) - 800 Jonathan's standing on a wall
+## Exercise 5 (bonus) - 800 Jonathan's standing on a wall
 
 Imagine we needed to generate a big block of text like: 
 
@@ -165,7 +165,7 @@ Then we can manually cleanup line 000 as it's a little different.
 A note about `0`: Generally when you build complex macros it's good practice to explicitly position yourself
 when you do things like moving to a new line.
 This avoids some subtle bugs and weird edge cases.
-As you build macros yourself you'll start to realize a set of "best practices" or "macro hygene" that make them less buggy. 
+As you build macros yourself you'll start to realize a set of "best practices" or "macro hygiene" that make them less buggy. 
 
 # Summary
 
